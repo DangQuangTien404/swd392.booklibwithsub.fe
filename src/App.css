@@ -1,5 +1,23 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .App {
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
 }
 
 .App-logo {
@@ -14,14 +32,109 @@
 }
 
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #4CAF50;
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.App-header h1 {
+  font-family: 'Pacifico', cursive;
+  font-size: 3rem;
+  margin: 0;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin-left: 1rem; /* Adds space between the title and the button */
+}
+
+.header-menu h1 {
+  margin-right: 2rem; /* Adds space between the title and the menu button */
+}
+
+.App-header p {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  letter-spacing: 1px;
+}
+
+.features {
+  margin-bottom: 2rem;
+}
+
+.features-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.features-list {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  font-size: 1.2rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.feature-item span {
+  margin-left: 0.5rem;
+}
+
+.plans {
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.subscription .plan {
+  border: 1px solid #ddd;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+button {
+  background-color: #4CAF50;
   color: white;
+  border: 2px solid white; /* Adds a white outline */
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px; /* Adds rounded corners */
+  transition: box-shadow 0.2s ease, transform 0.2s ease; /* Smooth hover effect */
+}
+
+button:hover {
+  background-color: #45a049;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adds a shadow effect on hover */
+  transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background-color: #333;
+  color: white;
+  width: 100%;
 }
 
 .App-link {
@@ -35,4 +148,46 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.subscription-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.subscription-card {
+  text-align: center;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.subscription-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.subscription-price {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.subscription-description {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.header-menu {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-button {
+  font-size: 1.5rem;
+  color: white;
 }
