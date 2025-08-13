@@ -1,0 +1,51 @@
+.ant-modal-content {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.modal-top-line {
+  width: 80%;
+  height: 4px;
+  background: linear-gradient(to right, #4CAF50, #81C784);
+  border-radius: 2px;
+  margin: 0 auto 1.5rem;
+}
+
+.ant-modal-body {
+  padding: 2rem;
+}
+
+.ant-form {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.ant-form-item-label > label {
+  font-weight: bold;
+  color: #333;
+}
+
+.ant-btn-primary {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+  font-size: 1rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+}
+
+.ant-btn-primary:hover {
+  background-color: #45a049;
+  border-color: #45a049;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}

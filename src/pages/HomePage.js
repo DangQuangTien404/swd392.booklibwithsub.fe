@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { Layout, Typography, Button, Card, Row, Col, Space, Drawer, Menu } from 'antd';
+import React from 'react';
+import { Layout, Typography, Button, Card, Row, Col, Space } from 'antd';
 import { MenuOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import '../styles/HomePage.css';
 
-const { Header, Content, Footer } = Layout;
+const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 function HomePage() {
-  const [drawerVisible, setDrawerVisible] = useState(false);
-
   const plans = [
     {
       title: 'Basic',
@@ -31,45 +31,14 @@ function HomePage() {
   ];
 
   const features = [
-    { text: 'Access thousands of books anytime, anywhere.', icon: <CheckCircleOutlined /> },
-    { text: 'Flexible subscription plans to suit your needs.', icon: <CheckCircleOutlined /> },
-    { text: 'Curated recommendations just for you.', icon: <CheckCircleOutlined /> },
-  ];
-
-  const menuItems = [
-    { key: 'home', label: 'Home' },
-    { key: 'features', label: 'Features' },
-    { key: 'plans', label: 'Plans' },
-    { key: 'contact', label: 'Contact' },
+    { text: 'Access thousands of books anytime, anywhere.', icon: <CheckCircleOutlined/> },
+    { text: 'Flexible subscription plans to suit your needs.', icon: <CheckCircleOutlined/> },
+    { text: 'Curated recommendations just for you.', icon: <CheckCircleOutlined/> },
   ];
 
   return (
     <Layout className="App">
-      <Header className="App-header">
-        <div className="header-menu">
-          <Button
-            type="text"
-            icon={<MenuOutlined />}
-            className="menu-button"
-            onClick={() => setDrawerVisible(true)}
-          />
-          <Title level={1} style={{ color: 'white', margin: 0 }}>BookLib</Title>
-        </div>
-      </Header>
-
-      <Drawer
-        title="Menu"
-        placement="left"
-        onClose={() => setDrawerVisible(false)}
-        visible={drawerVisible}
-      >
-        <Menu
-          mode="vertical"
-          items={menuItems}
-          onClick={(item) => alert(`Navigating to ${item.key}`)}
-        />
-      </Drawer>
-
+      <Header />
       <Content style={{ padding: '2rem' }}>
         <section className="features">
           <Title level={2} className="features-title">Why Choose Us?</Title>
@@ -104,10 +73,7 @@ function HomePage() {
           </Row>
         </section>
       </Content>
-
-      <Footer style={{ textAlign: 'center', backgroundColor: '#333', color: 'white' }}>
-        &copy; 2025 BookLib. All rights reserved.
-      </Footer>
+      <Footer />
     </Layout>
   );
 }
