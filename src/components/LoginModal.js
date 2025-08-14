@@ -1,11 +1,19 @@
 import React from 'react';
 import { Modal, Form, Input, Button } from 'antd';
+import { login } from '../api/auth';
 import '../styles/LoginModal.css';
 
 function LoginModal({ visible, onClose }) {
-  const onFinish = (values) => {
-    console.log('Login successful:', values);
-    onClose();
+  const onFinish = async (values) => {
+    try {
+      const result = await login(values);
+      // You may want to store the token in localStorage or context here
+      console.log('Login successful:', result);
+      onClose();
+    } catch (error) {
+      // Handle error (show message to user)
+      console.error('Login failed:', error);
+    }
   };
 
   return (
@@ -23,11 +31,11 @@ function LoginModal({ visible, onClose }) {
         style={{ maxWidth: '400px', margin: '0 auto' }}
       >
         <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Please input your email!' }]}
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input type="email" />
+          <Input type="username" />
         </Form.Item>
         <Form.Item
           label="Password"

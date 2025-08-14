@@ -1,11 +1,19 @@
 import React from 'react';
 import { Modal, Form, Input, Button } from 'antd';
+import { register } from '../api/auth';
 import '../styles/RegisterModal.css';
 
 function RegisterModal({ visible, onClose }) {
-  const onFinish = (values) => {
-    console.log('Registration successful:', values);
-    onClose();
+  const onFinish = async (values) => {
+    try {
+      const result = await register(values);
+      // You may want to show a success message or auto-login
+      console.log('Registration successful:', result);
+      onClose();
+    } catch (error) {
+      // Handle error (show message to user)
+      console.error('Registration failed:', error);
+    }
   };
 
   return (
@@ -22,19 +30,13 @@ function RegisterModal({ visible, onClose }) {
         onFinish={onFinish}
         style={{ maxWidth: '400px', margin: '0 auto' }}
       >
+
         <Form.Item
-          label="Name"
-          name="name"
-          rules={[{ required: true, message: 'Please input your name!' }]}
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Please input your email!' }]}
-        >
-          <Input type="email" />
+          <Input type="username" />
         </Form.Item>
         <Form.Item
           label="Password"
