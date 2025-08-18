@@ -6,6 +6,7 @@ const { Text } = Typography;
 
 function RegisterModal({ visible, onClose, switchToLogin }) {
   const onFinish = (values) => {
+    // API call removed as requested
     console.log('Registration successful:', values);
     onClose();
   };
