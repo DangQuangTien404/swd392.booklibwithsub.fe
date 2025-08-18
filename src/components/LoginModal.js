@@ -1,8 +1,10 @@
 import React from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Input, Button, Typography } from 'antd';
 import '../styles/LoginModal.css';
 
-function LoginModal({ visible, onClose }) {
+const { Text } = Typography;
+
+function LoginModal({ visible, onClose, switchToRegister }) {
   const onFinish = (values) => {
     console.log('Login successful:', values);
     onClose();
@@ -42,6 +44,12 @@ function LoginModal({ visible, onClose }) {
           </Button>
         </Form.Item>
       </Form>
+      <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+        <Text>Don't have an account yet? </Text>
+        <Button type="link" onClick={switchToRegister} style={{ padding: 0 }}>
+          Register here
+        </Button>
+      </div>
     </Modal>
   );
 }

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Layout, Typography, Button, Drawer, Menu } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
+import { Layout, Typography, Button } from 'antd';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
 import '../styles/Header.css';
@@ -9,73 +8,77 @@ const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
 function Header() {
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
-  const [selectedKeys, setSelectedKeys] = useState([]); // Track selected menu item
 
-  const handleMenuClick = (key) => {
-    if (key === 'login') {
-      setLoginVisible(true);
-    } else if (key === 'register') {
-      setRegisterVisible(true);
-    }
-
-    // Clear the selected menu item
-    setSelectedKeys([]);
+  const switchToRegister = () => {
+    setLoginVisible(false);
+    setRegisterVisible(true);
   };
 
-  const menuItems = [
-    { key: 'home', label: 'Home', link: '/' },
-    { key: 'features', label: 'Features', link: '/' },
-    { key: 'plans', label: 'Plans', link: '/' },
-    { key: 'login', label: 'Login' },
-    { key: 'register', label: 'Register' },
-  ];
+  const switchToLogin = () => {
+    setRegisterVisible(false);
+    setLoginVisible(true);
+  };
 
   return (
-    <>
-      <AntHeader className="App-header">
-        <div className="header-menu">
-          <Button
-            type="text"
-            icon={<MenuOutlined />}
-            className="menu-button"
-            onClick={() => setDrawerVisible(true)}
-          />
-          <Title level={1} style={{ color: 'white', margin: 0 }}>BookLib</Title>
-        </div>
-      </AntHeader>
-
-      <Drawer
-        title="Menu"
-        placement="left"
-        onClose={() => setDrawerVisible(false)}
-        visible={drawerVisible}
+    <AntHeader
+      className="App-header"
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 2rem',
+        backgroundColor: '#4CAF50',
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <Title
+        level={1}
+        style={{
+          color: 'white',
+          margin: 0,
+          fontFamily: 'Pacifico, cursive',
+          fontSize: '2.5rem',
+        }}
       >
-        <Menu
-          mode="vertical"
-          selectedKeys={selectedKeys} // Control selected menu item
-          onClick={({ key }) => {
-            setSelectedKeys([key]); // Temporarily set the selected key
-            handleMenuClick(key); // Handle menu item click
-          }}
-          items={menuItems.map((item) => ({
-            key: item.key,
-            label: item.link ? (
-              <a href={item.link} style={{ display: 'block', width: '100%' }}>
-                {item.label}
-              </a>
-            ) : (
-              <div style={{ display: 'block', width: '100%' }}>{item.label}</div>
-            ),
-          }))}
-        />
-      </Drawer>
+        BookLib
+      </Title>
+      <Button
+        type="link"
+        onClick={() => setLoginVisible(true)}
+        style={{
+          color: 'white',
+          fontSize: '1rem',
+          fontWeight: 'bold',
+          fontFamily: 'Pacifico, cursive',
+          backgroundColor: 'transparent',
+          border: '1px solid white',
+          borderRadius: '4px',
+          padding: '0.5rem 1rem',
+          transition: 'background-color 0.3s ease',
+        }}
+        onMouseEnter={(e) => {
+          e.target.style.backgroundColor = '#45a049';
+        }}
+        onMouseLeave={(e) => {
+          e.target.style.backgroundColor = 'transparent';
+        }}
+      >
+        Login
+      </Button>
 
-      <LoginModal visible={loginVisible} onClose={() => setLoginVisible(false)} />
-      <RegisterModal visible={registerVisible} onClose={() => setRegisterVisible(false)} />
-    </>
+      <LoginModal
+        visible={loginVisible}
+        onClose={() => setLoginVisible(false)}
+        switchToRegister={switchToRegister}
+      />
+      <RegisterModal
+        visible={registerVisible}
+        onClose={() => setRegisterVisible(false)}
+        switchToLogin={switchToLogin}
+      />
+    </AntHeader>
   );
 }
 
