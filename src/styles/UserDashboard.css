@@ -1,0 +1,111 @@
+.UserDashboard {
+  padding: 0;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.UserDashboard-header {
+  text-align: center;
+  margin: 0 auto;
+  background-color: transparent;
+  color: white;
+  padding: 1rem;
+  max-width: 800px; /* Restrict width to match the cards */
+}
+
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: bold;
+  font-family: 'Pacifico', cursive;
+  color: #000000;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  margin: 0;
+}
+
+.UserDashboard-sider {
+  background-color: #8FBC8F; /* Dark sea green for a subtle complement to green */
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  font-size: 1.5rem; /* Increased font size */
+  font-weight: bold;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  bottom: 4rem;
+  width: 200px;
+  font-family: 'Pacifico', cursive;
+}
+
+.UserDashboard-sider.sticky {
+  position: sticky;
+  top: 0;
+}
+
+.UserDashboard-sider:first-child {
+  left: 0;
+}
+
+.UserDashboard-sider:last-child {
+  right: 0;
+}
+
+.UserDashboard-content {
+  margin: 4rem 200px;
+  padding: 2rem;
+  flex: 1;
+}
+
+.UserDashboard-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px  #555 rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  padding: 1.5rem;
+  max-width: 800px;
+}
+
+.UserDashboard-section h2 {
+  font-size: 1.8rem;
+  color: #555;
+  margin-bottom: 1rem;
+}
+
+.UserDashboard-section p {
+  font-size: 1rem;
+  color: #666;
+  line-height: 1.6;
+}
+
+.UserDashboard-card {
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.UserDashboard-card ul {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 1rem;
+}
+
+.UserDashboard-card ul li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.UserDashboard-card ul li:last-child {
+  border-bottom: none;
+}
+
+.UserDashboard-card button {
+  margin-top: 1rem;
+}

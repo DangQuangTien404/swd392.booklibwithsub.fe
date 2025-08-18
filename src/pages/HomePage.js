@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout, Typography, Button, Card, Row, Col, Space } from 'antd';
 import { MenuOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/HomePage.css';
@@ -72,6 +73,12 @@ function HomePage() {
             ))}
           </Row>
         </section>
+
+        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+          <Link to="/dashboard">
+            <Button type="primary">Go to Dashboard</Button>
+          </Link>
+        </div>
       </Content>
       <Footer />
     </Layout>
