@@ -24,19 +24,13 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
         onFinish={onFinish}
         style={{ maxWidth: '400px', margin: '0 auto' }}
       >
+
         <Form.Item
-          label="Name"
-          name="name"
-          rules={[{ required: true, message: 'Please input your name!' }]}
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input />
-        </Form.Item>
-        <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Please input your email!' }]}
-        >
-          <Input type="email" />
+          <Input type="username" />
         </Form.Item>
         <Form.Item
           label="Password"

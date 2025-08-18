@@ -25,11 +25,11 @@ function LoginModal({ visible, onClose, switchToRegister }) {
         style={{ maxWidth: '400px', margin: '0 auto' }}
       >
         <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, message: 'Please input your email!' }]}
+          label="Username"
+          name="username"
+          rules={[{ required: true, message: 'Please input your username!' }]}
         >
-          <Input type="email" />
+          <Input type="username" />
         </Form.Item>
         <Form.Item
           label="Password"
