@@ -124,3 +124,16 @@ footer {
   color: white;
   width: 100%;
 }
+
+.HomePage-content {
+  padding: 2rem;
+}
+
+.HomePage-subscription {
+  margin-top: 2rem;
+}
+
+.HomePage-center {
+  text-align: center;
+  margin-top: 2rem;
+}

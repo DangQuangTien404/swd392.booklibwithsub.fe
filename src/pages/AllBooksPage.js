@@ -34,23 +34,26 @@ function AllBooksPage() {
       <Header />
       <Content style={{ padding: '2rem' }}>
         <h1 className="page-title">All Books</h1>
-        <Row gutter={[16, 16]}>
-          {paginatedBooks.map((book) => (
-            <Col key={book.id} xs={24} sm={12} md={8} lg={8} xl={8}>
-              <Card className="book-card" hoverable title={book.title}>
-                <p><strong>Author:</strong> {book.author}</p>
-                <p><strong>Price:</strong> {book.price}</p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-        <Pagination
-          current={currentPage}
-          pageSize={pageSize}
-          total={books.length}
-          onChange={handlePageChange}
-          style={{ marginTop: '1rem', textAlign: 'center' }}
-        />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Row gutter={[16, 16]}>
+            {paginatedBooks.map((book) => (
+              <Col key={book.id} xs={24} sm={12} md={8} lg={8} xl={8}>
+                <Card className="book-card" hoverable>
+                  <h3>{book.title}</h3>
+                  <p><strong>Author:</strong> {book.author}</p>
+                  <p><strong>Price:</strong> {book.price}</p>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+          <Pagination
+            current={currentPage}
+            pageSize={pageSize}
+            total={books.length}
+            onChange={handlePageChange}
+            style={{ marginTop: '1rem' }}
+          />
+        </div>
       </Content>
       <Footer style={{ textAlign: 'center', backgroundColor: '#333', color: 'white' }}>
         &copy; 2025 BookLib. All rights reserved.

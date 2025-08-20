@@ -4,16 +4,13 @@ import { Layout } from 'antd';
 import '../styles/UserDashboard.css';
 import Card from '../components/Card';
 
-const { Content, Footer, Sider } = Layout;
+const { Content, Footer } = Layout;
 
 function UserDashboard() {
   return (
     <Layout className="UserDashboard">
       <Header />
       <Layout>
-        <Sider width={200} className="UserDashboard-sider sticky">
-          <div className="sider-content">Welcome to your personalized space!</div>
-        </Sider>
         <Content style={{ padding: '2rem' }}>
           <div className="UserDashboard-header">
             <h1 className="dashboard-title">User Dashboard</h1>
@@ -47,9 +44,6 @@ function UserDashboard() {
             </Card>
           </section>
         </Content>
-        <Sider width={200} className="UserDashboard-sider sticky">
-          <div className="sider-content">Enjoy exploring your dashboard!</div>
-        </Sider>
       </Layout>
       <Footer style={{ textAlign: 'center', backgroundColor: '#333', color: 'white' }}>
         &copy; 2025 BookLib. All rights reserved.

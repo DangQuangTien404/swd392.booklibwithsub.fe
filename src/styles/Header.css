@@ -1,0 +1,41 @@
+.user-button {
+  background-color: #4CAF50;
+  color: white;
+  border: 1px solid white;
+  border-radius: 20px;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.9rem;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  width: 150px; /* Match button width with dropdown */
+}
+
+.user-button:hover {
+  background-color: #45a049;
+}
+
+.user-dropdown {
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.user-dropdown .ant-dropdown-menu {
+  border-radius: 8px;
+  width: 150px; /* Match dropdown width with button */
+}
+
+.App-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  background-color: #4CAF50;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.App-header-title {
+  margin: 0;
+  font-family: 'Pacifico, cursive';
+  font-size: 2.5rem;
+}

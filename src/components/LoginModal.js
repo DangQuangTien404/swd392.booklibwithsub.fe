@@ -1,13 +1,16 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Modal, Form, Input, Button, Typography, message } from 'antd';
 import { jwtDecode } from 'jwt-decode';
 import '../styles/LoginModal.css';
 import appsettings from '../appsettings';
 import { login } from '../api/auth';
+import { UserContext } from '../context/UserContext';
 
 const { Text } = Typography;
 
 function LoginModal({ visible, onClose, switchToRegister }) {
+  const { setUser } = useContext(UserContext);
+
   const onFinish = async (values) => {
     try {
       const data = await login(values);
@@ -22,6 +25,7 @@ function LoginModal({ visible, onClose, switchToRegister }) {
       console.log('User Role:', userRole);
       console.log('Session Expiry:', sessionExpiry);
 
+      setUser({ token: data.token, userName, userRole });
       message.success(`Welcome, ${userName}!`);
       onClose();
     } catch (error) {

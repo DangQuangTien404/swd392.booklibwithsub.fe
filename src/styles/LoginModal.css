@@ -49,3 +49,8 @@
   border-color: #45a049;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
+.LoginModal-form {
+  max-width: 400px;
+  margin: 0 auto;
+}

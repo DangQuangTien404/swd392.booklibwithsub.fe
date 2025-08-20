@@ -4,7 +4,7 @@
 import appsettings from '../appsettings';
 
 export async function login(values) {
-  const response = await fetch(`${appsettings.apiBaseUrl}/login`, {
+  const response = await fetch(`${appsettings.apiBaseUrl}/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -20,7 +20,7 @@ export async function login(values) {
 }
 
 export async function register(values) {
-  const response = await fetch(`${appsettings.apiBaseUrl}/register`, {
+  const response = await fetch(`${appsettings.apiBaseUrl}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

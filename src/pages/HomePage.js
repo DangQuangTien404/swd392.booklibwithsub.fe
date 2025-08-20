@@ -75,11 +75,7 @@ function HomePage() {
           </Row>
         </section>
 
-        <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <Link to="/dashboard">
-            <Button type="primary">Go to Dashboard</Button>
-          </Link>
-        </div>
+        
       </Content>
       <Footer />
     </Layout>

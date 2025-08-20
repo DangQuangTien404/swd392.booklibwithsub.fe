@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Layout, Typography, Button } from 'antd';
+import React, { useState, useEffect, useContext } from 'react';
+import { Layout, Typography, Button, Menu, Dropdown, Card } from 'antd';
 import { Link } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { UserContext } from '../context/UserContext';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
 import '../styles/Header.css';
@@ -10,17 +10,11 @@ const { Header: AntHeader } = Layout;
 const { Title } = Typography;
 
 function Header() {
+  const { user, setUser } = useContext(UserContext);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
-  const [userName, setUserName] = useState(null);
 
-  useEffect(() => {
-    const token = localStorage.getItem('jwtToken');
-    if (token) {
-      const decodedToken = jwtDecode(token);
-      setUserName(decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"]);
-    }
-  }, []);
+  const userName = user?.userName;
 
   const switchToRegister = () => {
     setLoginVisible(false);
@@ -31,6 +25,19 @@ function Header() {
     setRegisterVisible(false);
     setLoginVisible(true);
   };
+
+  const userMenu = (
+    <Menu>
+      <Menu.Item key="1">
+        <Link to="/dashboard">Profile</Link>
+      </Menu.Item>
+      <Menu.Item key="2" onClick={() => {
+        setUser(null);
+      }}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <AntHeader
@@ -57,30 +64,16 @@ function Header() {
         </Link>
       </Title>
       {userName ? (
-        <Link to="/dashboard" style={{ color: 'white', fontSize: '1rem', fontWeight: 'bold' }}>
-          {userName}
-        </Link>
+        <Dropdown overlay={userMenu} placement="bottomRight" overlayClassName="user-dropdown">
+          <Button className="user-button">
+            {userName}
+          </Button>
+        </Dropdown>
       ) : (
         <Button
           type="link"
           onClick={() => setLoginVisible(true)}
-          style={{
-            color: 'white',
-            fontSize: '1rem',
-            fontWeight: 'bold',
-            fontFamily: 'Pacifico, cursive',
-            backgroundColor: 'transparent',
-            border: '1px solid white',
-            borderRadius: '4px',
-            padding: '0.5rem 1rem',
-            transition: 'background-color 0.3s ease',
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = '#45a049';
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = 'transparent';
-          }}
+          className="user-button"
         >
           Login
         </Button>

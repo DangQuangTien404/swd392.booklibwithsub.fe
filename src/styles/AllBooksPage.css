@@ -28,3 +28,17 @@
   margin: 0.5rem 0;
   color: #555;
 }
+
+.AllBooksPage-content {
+  padding: 2rem;
+}
+
+.AllBooksPage-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.AllBooksPage-pagination {
+  margin-top: 1rem;
+}
