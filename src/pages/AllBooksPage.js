@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { Layout, Row, Col, Pagination } from 'antd';
 import Card from '../components/Card';
+import { fetchBooks } from '../api/books';
 import '../styles/AllBooksPage.css';
 
 const { Content, Footer } = Layout;
 
-const books = [
-  { id: 1, title: '3 Shades of Blue', author: 'James Kaplan', price: '845,000 ₫' },
-  { id: 2, title: 'A Bigger Message', author: 'Martin Gayford', price: '545,000 ₫' },
-  { id: 3, title: 'A First Time For Everything', author: 'Dan Santat', price: '415,000 ₫' },
-  { id: 4, title: 'A Heart That Works', author: 'Rob Delaney', price: '585,000 ₫' },
-  { id: 5, title: 'A Little Life', author: 'Hanya Yanagihara', price: '415,000 ₫' },
-  { id: 6, title: 'A Man Called Ove', author: 'Fredrik Backman', price: '465,000 ₫' },
-  { id: 7, title: 'A Roof!', author: 'Stephanie Ellen', price: '495,000 ₫' },
-  { id: 8, title: 'Akira, Vol.1', author: 'Katsuhiro Otomo', price: '585,000 ₫' },
-  { id: 9, title: 'Akira, Vol.2', author: 'Katsuhiro Otomo', price: '585,000 ₫' },
-  { id: 10, title: 'All of the Marvels', author: 'Douglas Wolk', price: '415,000 ₫' },
-];
-
 function AllBooksPage() {
+  const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6;
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      try {
+        const data = await fetchBooks();
+        setBooks(data);
+      } catch (error) {
+        console.error('Error loading books:', error);
+      }
+    };
+
+    loadBooks();
+  }, []);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -35,13 +37,13 @@ function AllBooksPage() {
       <Content style={{ padding: '2rem' }}>
         <h1 className="page-title">All Books</h1>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Row gutter={[16, 16]}>
+          <Row gutter={[24, 24]} className="AllBooksPage-row" justify="center">
             {paginatedBooks.map((book) => (
-              <Col key={book.id} xs={24} sm={12} md={8} lg={8} xl={8}>
+              <Col key={book.bookID} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card className="book-card" hoverable>
                   <h3>{book.title}</h3>
-                  <p><strong>Author:</strong> {book.author}</p>
-                  <p><strong>Price:</strong> {book.price}</p>
+                  <p><strong>Author:</strong> {book.authorName}</p>
+                  <p><strong>Published Year:</strong> {book.publishedYear}</p>
                 </Card>
               </Col>
             ))}

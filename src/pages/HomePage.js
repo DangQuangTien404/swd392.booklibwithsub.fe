@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Layout, Typography, Button, Row, Col, Space } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
+import { fetchBooks } from '../api/books';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
 
 function HomePage() {
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const loadBooks = async () => {
+      try {
+        const data = await fetchBooks();
+        setBooks(data);
+      } catch (error) {
+        console.error('Error loading books:', error);
+      }
+    };
+
+    loadBooks();
+  }, []);
+
   const plans = [
     {
       title: 'Basic',
@@ -75,7 +92,20 @@ function HomePage() {
           </Row>
         </section>
 
-        
+        <section className="book-list" style={{ textAlign: 'center' }}>
+          <Title level={2} className="book-list-title">Available Books</Title>
+          <Row gutter={[24, 24]} justify="center">
+            {books.slice(0, 3).map((book) => (
+              <Col key={book.bookID} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <Card className="subscription-card" hoverable>
+                  <h3>{book.title}</h3>
+                  <p><strong>Author:</strong> {book.authorName}</p>
+                  <p><strong>Published Year:</strong> {book.publishedYear}</p>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </section>
       </Content>
       <Footer />
     </Layout>
