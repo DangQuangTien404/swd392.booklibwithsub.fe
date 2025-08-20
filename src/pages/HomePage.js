@@ -1,9 +1,10 @@
 import React from 'react';
-import { Layout, Typography, Button, Card, Row, Col, Space } from 'antd';
-import { MenuOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Layout, Typography, Button, Row, Col, Space } from 'antd';
+import { CheckCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Card from '../components/Card';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;

@@ -2,7 +2,9 @@
 // Centralized app settings for API base URL
 
 const appsettings = {
-  apiBaseUrl: "https://booklibwithsubapi.azurewebsites.net/api"
+  apiBaseUrl: process.env.NODE_ENV === 'development' 
+    ? "http://localhost:8080/api" 
+    : "https://booklibwithsubapi.azurewebsites.net/api"
 };
 
 export default appsettings;

@@ -1,7 +1,8 @@
 import React from 'react';
 import Header from '../components/Header';
-import { Layout, Card } from 'antd';
+import { Layout } from 'antd';
 import '../styles/UserDashboard.css';
+import Card from '../components/Card';
 
 const { Content, Footer, Sider } = Layout;
 

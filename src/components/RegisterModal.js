@@ -1,14 +1,21 @@
 import React from 'react';
-import { Modal, Form, Input, Button, Typography } from 'antd';
+import { Modal, Form, Input, Button, Typography, message } from 'antd';
 import '../styles/RegisterModal.css';
+import appsettings from '../appsettings';
+import { register } from '../api/auth';
 
 const { Text } = Typography;
 
 function RegisterModal({ visible, onClose, switchToLogin }) {
-  const onFinish = (values) => {
-    // API call removed as requested
-    console.log('Registration successful:', values);
-    onClose();
+  const onFinish = async (values) => {
+    try {
+      const updatedValues = { ...values, role: 'user' }; // Automatically set role to 'user'
+      await register(updatedValues);
+      message.success('Registration successful! Please log in.');
+      onClose();
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   return (
@@ -25,7 +32,6 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
         onFinish={onFinish}
         style={{ maxWidth: '400px', margin: '0 auto' }}
       >
-
         <Form.Item
           label="Username"
           name="username"
@@ -39,6 +45,27 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
           rules={[{ required: true, message: 'Please input your password!' }]}
         >
           <Input.Password />
+        </Form.Item>
+        <Form.Item
+          label="Full Name"
+          name="fullName"
+          rules={[{ required: true, message: 'Please input your full name!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[{ required: true, type: 'email', message: 'Please input a valid email!' }]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          label="Phone Number"
+          name="phoneNumber"
+          rules={[{ required: true, message: 'Please input your phone number!' }]}
+        >
+          <Input />
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" block>

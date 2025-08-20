@@ -1,13 +1,32 @@
 import React from 'react';
-import { Modal, Form, Input, Button, Typography } from 'antd';
+import { Modal, Form, Input, Button, Typography, message } from 'antd';
+import { jwtDecode } from 'jwt-decode';
 import '../styles/LoginModal.css';
+import appsettings from '../appsettings';
+import { login } from '../api/auth';
 
 const { Text } = Typography;
 
 function LoginModal({ visible, onClose, switchToRegister }) {
-  const onFinish = (values) => {
-    console.log('Login successful:', values);
-    onClose();
+  const onFinish = async (values) => {
+    try {
+      const data = await login(values);
+      const decodedToken = jwtDecode(data.token);
+
+      console.log('Decoded Token:', decodedToken);
+      const userName = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
+      const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+      const sessionExpiry = new Date(decodedToken.exp * 1000);
+
+      console.log('User Name:', userName);
+      console.log('User Role:', userRole);
+      console.log('Session Expiry:', sessionExpiry);
+
+      message.success(`Welcome, ${userName}!`);
+      onClose();
+    } catch (error) {
+      message.error(error.message);
+    }
   };
 
   return (
