@@ -119,7 +119,7 @@ main {
 }
 
 .subscription-price {
-  font-size: 2rem;
+  font-size: 3rem;
   color: #27ae60;
   font-weight: bold;
   margin-bottom: 1rem;
@@ -162,16 +162,40 @@ footer {
   margin-top: 1rem;
   width: 100%;
   padding: 0.5rem;
-  background: #1677ff;
-  color: #fff;
+  background: #27ae60 !important;
+  color: #fff !important;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 600;
+  transition: none;
 }
 
-.borrow-btn:hover {
-  background: #0958d9;
+.borrow-btn:hover, .borrow-btn:focus, .borrow-btn:active {
+  background: #27ae60 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.subscription-card .ant-btn-primary {
+  background: #27ae60 !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+  font-weight: 600;
+  transition: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.subscription-card .ant-btn-primary:hover, .subscription-card .ant-btn-primary:focus, .subscription-card .ant-btn-primary:active {
+  background: #27ae60 !important;
+  color: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+  border: none !important;
 }
 
 .img-center {

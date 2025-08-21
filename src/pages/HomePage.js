@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import { Layout, Typography, Button, Row, Col, Space, message, Modal } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ import { fetchSubscriptionStatus, purchaseSubscription } from '../api/subscripti
 import { borrowBook } from '../api/loans';
 import appsettings from '../appsettings';
 import '../styles/HomePage.css';
+import { UserContext } from '../context/UserContext';
 
 const { Content } = Layout;
 const { Title, Paragraph } = Typography;
@@ -22,6 +23,8 @@ function HomePage() {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [borrowModal, setBorrowModal] = useState({ visible: false, book: null });
   const [modalInfo, setModalInfo] = useState({ visible: false, title: '', content: '' });
+  const { user } = useContext(UserContext);
+  const [loginPrompt, setLoginPrompt] = useState({ visible: false, book: null });
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -60,6 +63,10 @@ function HomePage() {
   ];
 
   const handleBorrowClick = (book) => {
+    if (!user) {
+      setLoginPrompt({ visible: true, book });
+      return;
+    }
     if (!subscriptionStatus || !subscriptionStatus.subscriptionId) {
       setModalInfo({ visible: true, title: 'No Active Subscription', content: 'You need an active subscription to borrow books.' });
       return;
@@ -197,6 +204,21 @@ function HomePage() {
           ]}
         >
           {modalInfo.content}
+        </Modal>
+        <Modal
+          open={loginPrompt.visible}
+          title="Login Required"
+          onOk={() => {
+            setLoginPrompt({ visible: false });
+            // Open login modal via event or context
+            const loginBtn = document.querySelector('.user-button');
+            if (loginBtn) loginBtn.click();
+          }}
+          onCancel={() => setLoginPrompt({ visible: false })}
+          okText="Login"
+          cancelText="Cancel"
+        >
+          You must be logged in to borrow books. Would you like to log in now?
         </Modal>
       </Content>
       <Footer />
