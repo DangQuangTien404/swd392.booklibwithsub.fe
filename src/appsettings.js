@@ -3,8 +3,8 @@
 
 const appsettings = {
   apiBaseUrl: process.env.NODE_ENV === 'development' 
-    ? "http://localhost:8080/api" 
-    : "hhttps://swd392booklibwithsubbe-production-1bea.up.railway.app/api"
+    ? "https://swd392booklibwithsubbe-production-1bea.up.railway.app/api" 
+    : "https://swd392booklibwithsubbe-production-1bea.up.railway.app/api"
 };
 
 export default appsettings;
