@@ -19,7 +19,9 @@
   transition: transform 0.2s, box-shadow 0.2s;
   padding: 1rem;
   text-align: center;
-  height: auto;
+  height: 350px;
+  min-height: 350px;
+  max-height: 350px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
