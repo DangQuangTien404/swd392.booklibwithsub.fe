@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { Layout, Typography, Row, Col, Space, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Layout, Typography, Button, Row, Col, Space } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
 import { fetchBooks } from '../api/books';
-import PayButton from '../components/PayButton';
-import { UserContext } from '../context/UserContext';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
@@ -14,7 +14,6 @@ const { Title, Paragraph } = Typography;
 
 function HomePage() {
   const [books, setBooks] = useState([]);
-  const { refetchUser } = useContext(UserContext);
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -29,39 +28,31 @@ function HomePage() {
     loadBooks();
   }, []);
 
-  const handlePaid = async () => {
-    await refetchUser();
-    message.success('Thanh toán thành công');
-  };
-
   const plans = [
     {
       title: 'Basic',
       price: '$5/month',
       description: 'Perfect for casual readers.',
-      subscriptionId: 1,
-      amount: 5,
+      onClick: () => alert('Subscribed to Basic Plan!'),
     },
     {
       title: 'Premium',
       price: '$10/month',
       description: 'Ideal for avid readers.',
-      subscriptionId: 2,
-      amount: 10,
+      onClick: () => alert('Subscribed to Premium Plan!'),
     },
     {
       title: 'Elite',
       price: '$20/month',
       description: 'Unlimited access to all features.',
-      subscriptionId: 3,
-      amount: 20,
+      onClick: () => alert('Subscribed to Elite Plan!'),
     },
   ];
 
   const features = [
-    { text: 'Access thousands of books anytime, anywhere.', icon: <CheckCircleOutlined /> },
-    { text: 'Flexible subscription plans to suit your needs.', icon: <CheckCircleOutlined /> },
-    { text: 'Curated recommendations just for you.', icon: <CheckCircleOutlined /> },
+    { text: 'Access thousands of books anytime, anywhere.', icon: <CheckCircleOutlined/> },
+    { text: 'Flexible subscription plans to suit your needs.', icon: <CheckCircleOutlined/> },
+    { text: 'Curated recommendations just for you.', icon: <CheckCircleOutlined/> },
   ];
 
   return (
@@ -92,11 +83,9 @@ function HomePage() {
                 >
                   <Paragraph className="subscription-price">{plan.price}</Paragraph>
                   <Paragraph className="subscription-description">{plan.description}</Paragraph>
-                  <PayButton
-                    subscriptionId={plan.subscriptionId}
-                    amount={plan.amount}
-                    onPaid={handlePaid}
-                  />
+                  <Button type="primary" onClick={plan.onClick}>
+                    Subscribe
+                  </Button>
                 </Card>
               </Col>
             ))}
