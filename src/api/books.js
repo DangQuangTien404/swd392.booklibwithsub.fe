@@ -1,5 +1,3 @@
-// src/api/books.js
-// API functions for fetching books
 
 import axios from 'axios';
 import appsettings from '../appsettings';

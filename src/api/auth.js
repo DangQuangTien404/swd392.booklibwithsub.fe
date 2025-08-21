@@ -1,5 +1,3 @@
-// src/api/auth.js
-// API functions for authentication (login/register)
 
 import appsettings from '../appsettings';
 

@@ -1,5 +1,3 @@
-// src/api/subscriptionPlans.js
-// API functions for fetching subscription plans
 
 import axios from 'axios';
 import appsettings from '../appsettings';

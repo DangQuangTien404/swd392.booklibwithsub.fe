@@ -9,7 +9,7 @@ const { Text } = Typography;
 function RegisterModal({ visible, onClose, switchToLogin }) {
   const onFinish = async (values) => {
     try {
-      const updatedValues = { ...values, role: 'user' }; // Automatically set role to 'user'
+      const updatedValues = { ...values, role: 'user' }; 
       await register(updatedValues);
       message.success('Registration successful! Please log in.');
       onClose();

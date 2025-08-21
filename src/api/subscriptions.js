@@ -1,5 +1,3 @@
-// src/api/subscriptions.js
-// API functions for fetching subscription status
 
 import axios from 'axios';
 import appsettings from '../appsettings';

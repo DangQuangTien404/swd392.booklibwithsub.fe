@@ -8,7 +8,7 @@ import Footer from '../components/Footer';
 import Card from '../components/Card';
 import { fetchBooks } from '../api/books';
 import { fetchSubscriptionPlans } from '../api/subscriptionPlans';
-import { purchaseSubscription } from '../api/subscriptions';
+import { fetchSubscriptionStatus, purchaseSubscription } from '../api/subscriptions';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
@@ -17,6 +17,7 @@ const { Title, Paragraph } = Typography;
 function HomePage() {
   const [books, setBooks] = useState([]);
   const [plans, setPlans] = useState([]);
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -35,8 +36,17 @@ function HomePage() {
         console.error('Error loading subscription plans:', error);
       }
     };
+    const loadSubscriptionStatus = async () => {
+      try {
+        const status = await fetchSubscriptionStatus();
+        setSubscriptionStatus(status);
+      } catch (error) {
+        setSubscriptionStatus(null);
+      }
+    };
     loadBooks();
     loadPlans();
+    loadSubscriptionStatus();
   }, []);
 
   const features = [
@@ -78,6 +88,13 @@ function HomePage() {
                     Max/Month: {plan.maxPerMonth}
                   </Paragraph>
                   <Button type="primary" onClick={async () => {
+                    if (subscriptionStatus && subscriptionStatus.endDate && new Date(subscriptionStatus.endDate) > new Date()) {
+                      Modal.info({
+                        title: 'Already Subscribed',
+                        content: 'You already have an active subscription. Please wait until it expires before purchasing a new one.',
+                      });
+                      return;
+                    }
                     try {
                       await purchaseSubscription(plan.subscriptionPlanID);
                       Modal.success({
