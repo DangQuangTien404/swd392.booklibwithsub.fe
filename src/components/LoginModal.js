@@ -16,14 +16,10 @@ function LoginModal({ visible, onClose, switchToRegister }) {
       const data = await login(values);
       const decodedToken = jwtDecode(data.token);
 
-      console.log('Decoded Token:', decodedToken);
       const userName = decodedToken["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
       const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
       const sessionExpiry = new Date(decodedToken.exp * 1000);
 
-      console.log('User Name:', userName);
-      console.log('User Role:', userRole);
-      console.log('Session Expiry:', sessionExpiry);
 
       setUser({ token: data.token, userName, userRole });
       message.success(`Welcome, ${userName}!`);
