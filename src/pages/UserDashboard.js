@@ -1,27 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import Header from '../components/Header';
-import { Layout } from 'antd';
+import { Layout, message } from 'antd';
 import '../styles/UserDashboard.css';
 import Card from '../components/Card';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
+import PayButton from '../components/PayButton';
+import { UserContext } from '../context/UserContext';
 
 const { Content, Footer } = Layout;
 
 function UserDashboard() {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const { refetchUser } = useContext(UserContext);
+
+  const loadSubscriptionStatus = async () => {
+    try {
+      const data = await fetchSubscriptionStatus();
+      setSubscriptionStatus(data);
+    } catch (error) {
+      console.error('Error loading subscription status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadSubscriptionStatus = async () => {
-      try {
-        const data = await fetchSubscriptionStatus();
-        setSubscriptionStatus(data);
-      } catch (error) {
-        console.error('Error loading subscription status:', error);
-      }
-    };
-
     loadSubscriptionStatus();
   }, []);
+
+  const handlePaid = async () => {
+    await refetchUser();
+    await loadSubscriptionStatus();
+    message.success('Thanh toán thành công');
+  };
+
+  const showPayButton = !loading && (!subscriptionStatus || new Date(subscriptionStatus.endDate) < new Date());
 
   return (
     <Layout className="UserDashboard">
@@ -35,21 +49,19 @@ function UserDashboard() {
             <h2>Subscription Management</h2>
             <p>Manage your active subscriptions and explore new plans.</p>
             <Card className="dashboard-card">
-              {subscriptionStatus ? (
+              {loading ? (
+                <p>Loading subscription details...</p>
+              ) : showPayButton ? (
+                <div>
+                  <p>No active subscription.</p>
+                  <PayButton subscriptionId={1} amount={5} onPaid={handlePaid} />
+                </div>
+              ) : (
                 <ul>
                   <li>Plan Name: {subscriptionStatus.planName}</li>
                   <li>Start Date: {new Date(subscriptionStatus.startDate).toLocaleDateString()}</li>
                   <li>End Date: {new Date(subscriptionStatus.endDate).toLocaleDateString()}</li>
-                  {/* <li>Status: {subscriptionStatus.status}</li>
-                  <li>Max Borrow Per Day: {subscriptionStatus.maxPerDay}</li>
-                  <li>Max Borrow Per Month: {subscriptionStatus.maxPerMonth}</li>
-                  <li>Borrowed Today: {subscriptionStatus.borrowedToday}</li>
-                  <li>Borrowed This Month: {subscriptionStatus.borrowedThisMonth}</li>
-                  <li>Remaining Today: {subscriptionStatus.remainingToday}</li>
-                  <li>Remaining This Month: {subscriptionStatus.remainingThisMonth}</li> */}
                 </ul>
-              ) : (
-                <p>Loading subscription details...</p>
               )}
             </Card>
           </section>
@@ -68,8 +80,7 @@ function UserDashboard() {
           <section className="UserDashboard-section">
             <h2>Account Details</h2>
             <p>Update your personal information and preferences.</p>
-            <Card className="dashboard-card">
-            </Card>
+            <Card className="dashboard-card"></Card>
           </section>
         </Content>
       </Layout>
