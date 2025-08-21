@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Layout, Typography, Button, Row, Col, Space } from 'antd';
+import { Layout, Typography, Button, Row, Col, Space, message, Modal } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Card from '../components/Card';
 import { fetchBooks } from '../api/books';
+import { fetchSubscriptionPlans } from '../api/subscriptionPlans';
+import { purchaseSubscription } from '../api/subscriptions';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
@@ -14,6 +16,7 @@ const { Title, Paragraph } = Typography;
 
 function HomePage() {
   const [books, setBooks] = useState([]);
+  const [plans, setPlans] = useState([]);
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -24,30 +27,17 @@ function HomePage() {
         console.error('Error loading books:', error);
       }
     };
-
+    const loadPlans = async () => {
+      try {
+        const data = await fetchSubscriptionPlans();
+        setPlans(data);
+      } catch (error) {
+        console.error('Error loading subscription plans:', error);
+      }
+    };
     loadBooks();
+    loadPlans();
   }, []);
-
-  const plans = [
-    {
-      title: 'Basic',
-      price: '$5/month',
-      description: 'Perfect for casual readers.',
-      onClick: () => alert('Subscribed to Basic Plan!'),
-    },
-    {
-      title: 'Premium',
-      price: '$10/month',
-      description: 'Ideal for avid readers.',
-      onClick: () => alert('Subscribed to Premium Plan!'),
-    },
-    {
-      title: 'Elite',
-      price: '$20/month',
-      description: 'Unlimited access to all features.',
-      onClick: () => alert('Subscribed to Elite Plan!'),
-    },
-  ];
 
   const features = [
     { text: 'Access thousands of books anytime, anywhere.', icon: <CheckCircleOutlined/> },
@@ -75,15 +65,32 @@ function HomePage() {
           <Title level={2} className="subscription-title">Subscription Plans</Title>
           <Row gutter={[16, 16]} justify="center">
             {plans.map((plan) => (
-              <Col key={plan.title} xs={24} sm={12} md={8}>
+              <Col key={plan.subscriptionPlanID} xs={24} sm={12} md={8}>
                 <Card
-                  title={plan.title}
+                  title={plan.planName}
                   bordered
                   className="subscription-card"
                 >
-                  <Paragraph className="subscription-price">{plan.price}</Paragraph>
-                  <Paragraph className="subscription-description">{plan.description}</Paragraph>
-                  <Button type="primary" onClick={plan.onClick}>
+                  <Paragraph className="subscription-price">${plan.price}/plan</Paragraph>
+                  <Paragraph className="subscription-description">
+                    Duration: {plan.durationDays} days<br/>
+                    Max/Day: {plan.maxPerDay}<br/>
+                    Max/Month: {plan.maxPerMonth}
+                  </Paragraph>
+                  <Button type="primary" onClick={async () => {
+                    try {
+                      await purchaseSubscription(plan.subscriptionPlanID);
+                      Modal.success({
+                        title: 'Subscription Successful',
+                        content: `You have subscribed to ${plan.planName}!`,
+                      });
+                    } catch (error) {
+                      Modal.error({
+                        title: 'Subscription Failed',
+                        content: 'There was a problem processing your subscription. Please try again.',
+                      });
+                    }
+                  }}>
                     Subscribe
                   </Button>
                 </Card>
@@ -110,6 +117,9 @@ function HomePage() {
               </Col>
             ))}
           </Row>
+          <div style={{ marginTop: '1rem', textAlign: 'right', width: '100%' }}>
+            <Link to="/all-books">See more &rarr;</Link>
+          </div>
         </section>
       </Content>
       <Footer />

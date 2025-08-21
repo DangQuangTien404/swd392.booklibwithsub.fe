@@ -21,3 +21,23 @@ export async function fetchSubscriptionStatus() {
     throw error;
   }
 }
+
+export async function purchaseSubscription(planId) {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const token = user?.token;
+    const response = await axios.post(
+      `${appsettings.apiBaseUrl}/subscriptions/purchase`,
+      { planId: planId },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error purchasing subscription:', error);
+    throw error;
+  }
+}
