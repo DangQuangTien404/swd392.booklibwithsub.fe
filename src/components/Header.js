@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Layout, Typography, Button, Menu, Dropdown, Card } from 'antd';
+import { Layout, Typography, Button, Menu, Dropdown, Card, message, Modal } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import LoginModal from './LoginModal';
@@ -13,6 +13,7 @@ function Header() {
   const { user, setUser } = useContext(UserContext);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
+  const [logoutModal, setLogoutModal] = useState(false);
 
   const userName = user?.userName;
 
@@ -31,35 +32,19 @@ function Header() {
       <Menu.Item key="1">
         <Link to="/dashboard">Profile</Link>
       </Menu.Item>
-      <Menu.Item key="2" onClick={() => {
-        setUser(null);
-      }}>
+      <Menu.Item key="2" onClick={() => setLogoutModal(true)}>
         Logout
       </Menu.Item>
     </Menu>
   );
 
   return (
-    <AntHeader
-      className="App-header"
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 2rem',
-        backgroundColor: '#4CAF50',
-        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-      }}
-    >
+    <AntHeader className="App-header">
       <Title
         level={1}
-        style={{
-          margin: 0,
-          fontFamily: 'Pacifico, cursive',
-          fontSize: '2.5rem',
-        }}
+        className="App-header-title"
       >
-        <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
+        <Link to="/" className="header-link">
           BookLib
         </Link>
       </Title>
@@ -89,6 +74,25 @@ function Header() {
         onClose={() => setRegisterVisible(false)}
         switchToLogin={switchToLogin}
       />
+      <Modal
+        open={logoutModal}
+        title="Logged Out"
+        onOk={() => {
+          setUser(null);
+          setLogoutModal(false);
+        }}
+        onCancel={() => setLogoutModal(false)}
+        footer={[
+          <Button key="ok" type="primary" onClick={() => {
+            setUser(null);
+            setLogoutModal(false);
+          }}>
+            OK
+          </Button>,
+        ]}
+      >
+        You have been logged out successfully.
+      </Modal>
     </AntHeader>
   );
 }

@@ -9,6 +9,8 @@ import Card from '../components/Card';
 import { fetchBooks } from '../api/books';
 import { fetchSubscriptionPlans } from '../api/subscriptionPlans';
 import { fetchSubscriptionStatus, purchaseSubscription } from '../api/subscriptions';
+import { borrowBook } from '../api/loans';
+import appsettings from '../appsettings';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
@@ -18,6 +20,8 @@ function HomePage() {
   const [books, setBooks] = useState([]);
   const [plans, setPlans] = useState([]);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+  const [borrowModal, setBorrowModal] = useState({ visible: false, book: null });
+  const [modalInfo, setModalInfo] = useState({ visible: false, title: '', content: '' });
 
   useEffect(() => {
     const loadBooks = async () => {
@@ -54,6 +58,27 @@ function HomePage() {
     { text: 'Flexible subscription plans to suit your needs.', icon: <CheckCircleOutlined/> },
     { text: 'Curated recommendations just for you.', icon: <CheckCircleOutlined/> },
   ];
+
+  const handleBorrowClick = (book) => {
+    if (!subscriptionStatus || !subscriptionStatus.subscriptionId) {
+      setModalInfo({ visible: true, title: 'No Active Subscription', content: 'You need an active subscription to borrow books.' });
+      return;
+    }
+    setBorrowModal({ visible: true, book });
+  };
+
+  const handleBorrowConfirm = async () => {
+    const book = borrowModal.book;
+    setBorrowModal({ visible: false, book: null });
+    try {
+      await borrowBook(subscriptionStatus.subscriptionId, book.bookID);
+      setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
+    } catch (error) {
+      setModalInfo({ visible: true, title: 'Borrow Failed', content: 'There was a problem borrowing this book. Please try again.' });
+    }
+  };
+
+  const handleModalClose = () => setModalInfo({ visible: false, title: '', content: '' });
 
   return (
     <Layout className="App">
@@ -121,16 +146,24 @@ function HomePage() {
           <Row gutter={[24, 24]} justify="center">
             {books.slice(0, 3).map((book) => (
               <Col key={book.bookID} xs={24} sm={12} md={8} lg={6} xl={6}>
-                <Card className="subscription-card" hoverable>
+                <div
+                  className="subscription-card"
+                >
                   {book.image ? (
-                    <img src={book.image} alt={book.title} style={{ width: '100%', height: 'auto', marginBottom: '1rem' }} />
+                    <img src={book.image} alt={book.title} className="img-center" />
                   ) : (
-                    <div style={{ textAlign: 'center', color: '#888', marginBottom: '1rem' }}>Image not found</div>
+                    <div className="img-not-found">Image not found</div>
                   )}
                   <h3>{book.title}</h3>
                   <p><strong>Author:</strong> {book.authorName}</p>
                   <p><strong>Published Year:</strong> {book.publishedYear}</p>
-                </Card>
+                  <button
+                    className="borrow-btn"
+                    onClick={() => handleBorrowClick(book)}
+                  >
+                    Borrow
+                  </button>
+                </div>
               </Col>
             ))}
           </Row>
@@ -138,6 +171,33 @@ function HomePage() {
             <Link to="/all-books">See more &rarr;</Link>
           </div>
         </section>
+        <Modal
+          open={borrowModal.visible}
+          title="Do you want to borrow this book?"
+          onOk={handleBorrowConfirm}
+          onCancel={() => setBorrowModal({ visible: false, book: null })}
+          okText="Yes"
+          cancelText="No"
+        >
+          {borrowModal.book && (
+            <div>
+              <strong>{borrowModal.book.title}</strong>
+            </div>
+          )}
+        </Modal>
+        <Modal
+          open={modalInfo.visible}
+          title={modalInfo.title}
+          onOk={handleModalClose}
+          onCancel={handleModalClose}
+          footer={[
+            <Button key="ok" type="primary" onClick={handleModalClose}>
+              OK
+            </Button>,
+          ]}
+        >
+          {modalInfo.content}
+        </Modal>
       </Content>
       <Footer />
     </Layout>

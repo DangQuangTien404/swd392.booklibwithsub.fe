@@ -1,6 +1,6 @@
 .user-button {
   background-color: #4CAF50;
-  color: white;
+  color: white !important;
   border: 1px solid white;
   border-radius: 20px;
   padding: 0.3rem 0.8rem;
@@ -8,11 +8,14 @@
   font-weight: bold;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
-  width: 150px; /* Match button width with dropdown */
+  width: 150px;
+  text-decoration: none ;
 }
 
 .user-button:hover {
   background-color: #45a049;
+  color: white ;
+  text-decoration: none ;
 }
 
 .user-dropdown {
@@ -22,7 +25,7 @@
 
 .user-dropdown .ant-dropdown-menu {
   border-radius: 8px;
-  width: 150px; /* Match dropdown width with button */
+  width: 150px;
 }
 
 .App-header {
@@ -38,4 +41,14 @@
   margin: 0;
   font-family: 'Pacifico, cursive';
   font-size: 2.5rem;
+}
+
+.header-link {
+  color: white !important;
+  text-decoration: none !important;
+}
+
+.header-link:hover {
+  color: #e0ffe0 !important;
+  text-decoration: none !important;
 }

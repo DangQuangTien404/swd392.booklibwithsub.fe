@@ -12,7 +12,7 @@
   background-color: transparent;
   color: white;
   padding: 1rem;
-  max-width: 800px; /* Restrict width to match the cards */
+  max-width: 800px; 
 }
 
 .dashboard-title {
@@ -25,13 +25,13 @@
 }
 
 .UserDashboard-sider {
-  background-color: #8FBC8F; /* Dark sea green for a subtle complement to green */
+  background-color: #8FBC8F; 
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 1rem;
-  font-size: 1.5rem; /* Increased font size */
+  font-size: 1.5rem; 
   font-weight: bold;
   text-align: center;
   position: sticky;

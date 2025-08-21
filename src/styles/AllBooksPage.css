@@ -59,3 +59,31 @@
 body {
   margin: 0;
 }
+
+.borrow-btn {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.5rem;
+  background: #1677ff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.borrow-btn:hover {
+  background: #0958d9;
+}
+
+.img-center {
+  width: 100%;
+  height: auto;
+  margin-bottom: 1rem;
+}
+
+.img-not-found {
+  text-align: center;
+  color: #888;
+  margin-bottom: 1rem;
+}
