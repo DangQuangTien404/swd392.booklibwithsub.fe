@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { Layout } from 'antd';
 import '../styles/UserDashboard.css';
 import Card from '../components/Card';
+import { fetchSubscriptionStatus } from '../api/subscriptions';
 
 const { Content, Footer } = Layout;
 
 function UserDashboard() {
+  const [subscriptionStatus, setSubscriptionStatus] = useState(null);
+
+  useEffect(() => {
+    const loadSubscriptionStatus = async () => {
+      try {
+        const data = await fetchSubscriptionStatus();
+        setSubscriptionStatus(data);
+      } catch (error) {
+        console.error('Error loading subscription status:', error);
+      }
+    };
+
+    loadSubscriptionStatus();
+  }, []);
+
   return (
     <Layout className="UserDashboard">
       <Header />
@@ -19,10 +35,22 @@ function UserDashboard() {
             <h2>Subscription Management</h2>
             <p>Manage your active subscriptions and explore new plans.</p>
             <Card className="dashboard-card">
-              <ul>
-                <li>Subscription 1: Active</li>
-                <li>Subscription 2: Expired</li>
-              </ul>
+              {subscriptionStatus ? (
+                <ul>
+                  <li>Plan Name: {subscriptionStatus.planName}</li>
+                  <li>Start Date: {new Date(subscriptionStatus.startDate).toLocaleDateString()}</li>
+                  <li>End Date: {new Date(subscriptionStatus.endDate).toLocaleDateString()}</li>
+                  {/* <li>Status: {subscriptionStatus.status}</li>
+                  <li>Max Borrow Per Day: {subscriptionStatus.maxPerDay}</li>
+                  <li>Max Borrow Per Month: {subscriptionStatus.maxPerMonth}</li>
+                  <li>Borrowed Today: {subscriptionStatus.borrowedToday}</li>
+                  <li>Borrowed This Month: {subscriptionStatus.borrowedThisMonth}</li>
+                  <li>Remaining Today: {subscriptionStatus.remainingToday}</li>
+                  <li>Remaining This Month: {subscriptionStatus.remainingThisMonth}</li> */}
+                </ul>
+              ) : (
+                <p>Loading subscription details...</p>
+              )}
             </Card>
           </section>
 

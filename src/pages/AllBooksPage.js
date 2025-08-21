@@ -41,6 +41,11 @@ function AllBooksPage() {
             {paginatedBooks.map((book) => (
               <Col key={book.bookID} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card className="book-card" hoverable>
+                  {book.image ? (
+                    <img src={book.image} alt={book.title} style={{ width: '100%', height: 'auto', marginBottom: '1rem' }} />
+                  ) : (
+                    <div style={{ textAlign: 'center', color: '#888', marginBottom: '1rem' }}>Image not found</div>
+                  )}
                   <h3>{book.title}</h3>
                   <p><strong>Author:</strong> {book.authorName}</p>
                   <p><strong>Published Year:</strong> {book.publishedYear}</p>
