@@ -4,8 +4,6 @@ body {
   padding: 0;
   line-height: 1.6;
   background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
   min-height: 100vh;
 }
 
@@ -13,121 +11,6 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-}
-
-main {
-  flex: 1;
-  padding: 2rem;
-}
-
-.App-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background-color: #4CAF50;
-  color: white;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.App-header h1 {
-  font-family: 'Pacifico', cursive;
-  font-size: 3rem;
-  margin: 0;
-}
-
-.header-menu {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.menu-button {
-  font-size: 1.5rem;
-  color: white;
-}
-
-.features {
-  margin-bottom: 2rem;
-}
-
-.features-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.features-list {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.feature-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.1rem;
-  color: #444;
-  padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.feature-item:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.feature-item span {
-  margin-left: 0.5rem;
-}
-
-.subscription-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 2rem;
-  color: #333;
-}
-
-.subscription-card, .book-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  padding: 1rem;
-  text-align: center;
-  height: 350px;
-  min-height: 350px;
-  max-height: 350px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.subscription-card:hover, .book-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
-}
-
-.subscription-price {
-  font-size: 3rem;
-  color: #27ae60;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.subscription-description {
-  color: #555;
-  margin-bottom: 1rem;
 }
 
 footer {
@@ -138,74 +21,9 @@ footer {
   width: 100%;
 }
 
-.HomePage-content {
-  padding: 2rem;
-}
-
-.HomePage-subscription {
-  margin-top: 2rem;
-}
-
-.HomePage-center {
-  text-align: center;
-  margin-top: 2rem;
-}
-
 .book-list-title {
   text-align: center;
   font-size: 2rem;
   margin-bottom: 2rem;
   color: #333;
-}
-
-.borrow-btn {
-  margin-top: 1rem;
-  width: 100%;
-  padding: 0.5rem;
-  background: #27ae60 !important;
-  color: #fff !important;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: none;
-}
-
-.borrow-btn:hover, .borrow-btn:focus, .borrow-btn:active {
-  background: #27ae60 !important;
-  color: #fff !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.subscription-card .ant-btn-primary {
-  background: #27ae60 !important;
-  color: #fff !important;
-  border: none !important;
-  border-radius: 4px !important;
-  cursor: pointer;
-  font-weight: 600;
-  transition: none !important;
-  box-shadow: none !important;
-  outline: none !important;
-}
-
-.subscription-card .ant-btn-primary:hover, .subscription-card .ant-btn-primary:focus, .subscription-card .ant-btn-primary:active {
-  background: #27ae60 !important;
-  color: #fff !important;
-  box-shadow: none !important;
-  outline: none !important;
-  border: none !important;
-}
-
-.img-center {
-  width: 100%;
-  height: auto;
-  margin-bottom: 1rem;
-}
-
-.img-not-found {
-  text-align: center;
-  color: #888;
-  margin-bottom: 1rem;
 }

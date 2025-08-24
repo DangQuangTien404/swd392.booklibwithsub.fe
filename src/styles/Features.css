@@ -1,0 +1,46 @@
+.why-choose-us {
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  text-align: center;
+  font-size: 2rem !important;
+  margin-bottom: 2rem;
+  color: #333;
+}
+
+.features {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+
+.feature {
+  flex: 1 1 220px;
+  max-width: 320px;
+  min-width: 220px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  margin: 0 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.feature:hover {
+  box-shadow: 0 4px 16px rgba(39,174,96,0.13);
+  transform: translateY(-4px);
+}
+
+.feature-icon {
+  font-size: 2.4rem;
+  color: #27ae60;
+  margin-bottom: 0.5rem;
+}

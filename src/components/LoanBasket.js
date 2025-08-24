@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import { Card, List, Button, message } from 'antd';
 import { addBooksToLoan } from '../api/loans';
+import { UserContext } from '../context/UserContext';
 
 function LoanBasket({ loanId }) {
-  const [basket, setBasket] = useState([]);
+  const { basket, setBasket } = useContext(UserContext); // Use basket from context
 
   const handleRemoveBook = (bookId) => {
     setBasket(basket.filter((book) => book.id !== bookId));
@@ -14,7 +15,7 @@ function LoanBasket({ loanId }) {
       const bookIds = basket.map((book) => book.id);
       await addBooksToLoan(loanId, bookIds);
       message.success('Books added to loan successfully!');
-      setBasket([]); 
+      setBasket([]); // Clear the basket after adding to loan
     } catch (error) {
       message.error('Failed to add books to loan. Please try again.');
     }
