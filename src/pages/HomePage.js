@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Layout, Typography, Button, Row, Col, Modal, message } from 'antd';
+import { Layout, Typography, Row, Col, Modal, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import Card from '../components/Card';
 import HeroSection from '../components/HeroSection';
 import Features from '../components/Features';
 import BookList from '../components/BookList';
+import SubscriptionPlanCard from '../components/SubscriptionPlanCard';
 import useHomePageData from '../hooks/useHomePageData';
 import useSubscriptionHandler from '../hooks/useSubscriptionHandler';
 import { UserContext } from '../context/UserContext';
@@ -16,7 +16,7 @@ import { borrowBook, addBooksToLoan } from '../api/loans';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 
 function HomePage() {
   const { user, subscriptionStatus, basket, setBasket } = useContext(UserContext); 
@@ -102,24 +102,10 @@ function HomePage() {
             <Row gutter={[16, 16]} justify="center">
               {plans.map((plan) => (
                 <Col key={plan.subscriptionPlanID} xs={24} sm={12} md={8}>
-                  <Card
-                    title={plan.planName}
-                    bordered
-                    className="subscription-card"
-                  >
-                    <Paragraph className="subscription-price">${plan.price}/plan</Paragraph>
-                    <Paragraph className="subscription-description">
-                      Duration: {plan.durationDays} days<br />
-                      Max/Day: {plan.maxPerDay}<br />
-                      Max/Month: {plan.maxPerMonth}
-                    </Paragraph>
-                    <Button
-                      type="primary"
-                      onClick={() => handleSubscription(plan)}
-                    >
-                      Subscribe
-                    </Button>
-                  </Card>
+                  <SubscriptionPlanCard
+                    plan={plan}
+                    onSubscribe={handleSubscription}
+                  />
                 </Col>
               ))}
             </Row>

@@ -63,14 +63,9 @@ function Header() {
 
   return (
     <AntHeader className="App-header">
-      <Title
-        level={1}
-        className="App-header-title"
-      >
-        <Link to="/" className="header-link">
-          BookLib
-        </Link>
-      </Title>
+      <div className="App-header-title">
+    <Link to="/" className="header-link">BookLib</Link>
+  </div>
       {userName ? (
         <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
           <Dropdown overlay={userMenu} placement="bottomRight" overlayClassName="user-dropdown">
