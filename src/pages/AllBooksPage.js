@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import { Layout, Row, Col, Pagination, Modal, Button } from 'antd';
-import { fetchBooks } from '../api/books';
+import { getBooksSorted } from '../api/books';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
 import { borrowBook } from '../api/loans';
 import '../styles/AllBooksPage.css';
@@ -19,7 +19,7 @@ function AllBooksPage() {
   useEffect(() => {
     const loadBooks = async () => {
       try {
-        const data = await fetchBooks();
+        const data = await getBooksSorted();
         setBooks(data);
       } catch (error) {
         console.error('Error loading books:', error);
@@ -55,7 +55,7 @@ function AllBooksPage() {
     const book = borrowModal.book;
     setBorrowModal({ visible: false, book: null });
     try {
-      await borrowBook(subscriptionStatus.subscriptionId, book.bookID);
+      await borrowBook(subscriptionStatus.subscriptionId, book.id);
       setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
     } catch (error) {
       setModalInfo({ visible: true, title: 'Borrow Failed', content: 'There was a problem borrowing this book. Please try again.' });
@@ -74,12 +74,10 @@ function AllBooksPage() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Row gutter={[24, 24]} className="AllBooksPage-row" justify="center">
             {paginatedBooks.map((book) => (
-              <Col key={book.bookID} xs={24} sm={12} md={8} lg={6} xl={6}>
-                <div
-                  className="book-card"
-                >
-                  {book.image ? (
-                    <img src={book.image} alt={book.title} className="img-center" />
+              <Col key={book.id} xs={24} sm={12} md={8} lg={6} xl={6}>
+                <div className="book-card">
+                  {book.coverImageUrl ? (
+                    <img src={book.coverImageUrl} alt={book.title} className="img-center" />
                   ) : (
                     <div className="img-not-found">Image not found</div>
                   )}
