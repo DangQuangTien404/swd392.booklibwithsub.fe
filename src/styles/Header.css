@@ -40,7 +40,38 @@
   text-decoration: none !important;
 }
 
-/* This container now only applies to the right-side actions */
+.logo-link {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff !important;
+  letter-spacing: 1px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  margin-left: 2.5rem;
+}
+
+.nav-link {
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #fff !important;
+  padding: 0.2rem 1.2rem;
+  border-radius: 6px;
+  transition: background 0.14s, color 0.14s;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+  background: #388e3c;
+  color: #e9ffe9 !important;
+  text-decoration: none;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
@@ -48,10 +79,6 @@
   margin-left: auto;
   height: 100%;
 }
-
-/* Remove the old .App-header > div selector! */
-
-/* Button and badge styles remain the same as before */
 .user-button, .basket-button {
   background: #fff !important;
   color: #27ae60 !important;

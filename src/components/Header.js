@@ -63,8 +63,11 @@ function Header() {
   return (
     <AntHeader className="App-header">
       <div className="App-header-title">
-        <Link to="/" className="header-link">BookLib</Link>
+    <Link to="/" className="header-link logo-link">BookLib</Link>
       </div>
+      <nav className="header-nav">
+        <Link to="/all-books" className="header-link nav-link">All Books</Link>
+      </nav>
       <div className="header-actions">
         {userName ? (
           <>
@@ -120,7 +123,7 @@ function Header() {
           </Button>,
         ]}
       >
-        You have been logged out successfully.
+        You have been logged out.
       </Modal>
     </AntHeader>
   );
