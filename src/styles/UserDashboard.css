@@ -1,6 +1,6 @@
 .UserDashboard {
   padding: 0;
-  background-color: #f9f9f9;
+  background-color: #f8f8f8;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -8,98 +8,71 @@
 
 .UserDashboard-header {
   text-align: center;
-  margin: 0 auto;
+  margin: 0 auto 2rem auto;
   background-color: transparent;
-  color: white;
-  padding: 1rem;
-  max-width: 800px; 
+  color: #222;
+  padding: 1rem 0 0.3rem 0;
+  max-width: 800px;
 }
 
 .dashboard-title {
-  font-size: 3rem;
+  font-size: 2.7rem;
   font-weight: bold;
   font-family: 'Pacifico', cursive;
-  color: #000000;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  color: #111;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.08);
   margin: 0;
-}
-
-.UserDashboard-sider {
-  background-color: #8FBC8F; 
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
-  font-size: 1.5rem; 
-  font-weight: bold;
-  text-align: center;
-  position: sticky;
-  top: 0;
-  bottom: 4rem;
-  width: 200px;
-  font-family: 'Pacifico', cursive;
-}
-
-.UserDashboard-sider.sticky {
-  position: sticky;
-  top: 0;
-}
-
-.UserDashboard-sider:first-child {
-  left: 0;
-}
-
-.UserDashboard-sider:last-child {
-  right: 0;
-}
-
-.UserDashboard-content {
-  margin: 4rem 200px;
-  padding: 2rem;
-  flex: 1;
+  letter-spacing: 1px;
 }
 
 .UserDashboard-section {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px  #555 rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.06);
   margin: 2rem auto;
-  padding: 1.5rem;
+  padding: 1.6rem 2.2rem 2rem 2.2rem;
   max-width: 800px;
+  width: 100%;
+  transition: box-shadow 0.15s;
 }
 
 .UserDashboard-section h2 {
-  font-size: 1.8rem;
-  color: #555;
-  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 0.6rem;
+  font-weight: 700;
 }
 
 .UserDashboard-section p {
-  font-size: 1rem;
-  color: #666;
-  line-height: 1.6;
+  font-size: 1.08rem;
+  color: #555;
+  margin-bottom: 1.2rem;
 }
 
 .UserDashboard-card {
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-top: 1rem;
+  border: 1px solid #ebeef0;
+  border-radius: 7px;
+  padding: 1.3rem 1.5rem;
+  margin-top: 0.7rem;
+  background: #fafbfc;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  min-height: 72px;
 }
 
 .UserDashboard-card ul {
   list-style: none;
   padding: 0;
-  margin-bottom: 1rem;
+  margin: 0;
 }
 
 .UserDashboard-card ul li {
-  padding: 0.5rem 0;
+  padding: 0.4rem 0;
   border-bottom: 1px solid #eee;
+  font-size: 1.01rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .UserDashboard-card ul li:last-child {
@@ -107,5 +80,17 @@
 }
 
 .UserDashboard-card button {
-  margin-top: 1rem;
+  margin-left: 0.7rem;
+  min-width: 90px;
+}
+
+@media (max-width: 900px) {
+  .UserDashboard-section {
+    max-width: 98vw;
+    padding: 1.1rem 0.5rem;
+  }
+  .UserDashboard-header, .dashboard-title {
+    max-width: 98vw;
+    font-size: 2rem;
+  }
 }
