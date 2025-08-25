@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Layout, Typography, Row, Col, Modal, Button, message } from 'antd';
+import { Layout, Modal, Button, message } from 'antd';
 import { Link } from 'react-router-dom';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeroSection from '../components/HeroSection';
 import Features from '../components/Features';
-import BookList from '../components/BookList';
 import SubscriptionPlanCard from '../components/SubscriptionPlanCard';
+import FeaturedBooksSection from '../components/FeaturedBooksSection';
 import useHomePageData from '../hooks/useHomePageData';
 import useSubscriptionHandler from '../hooks/useSubscriptionHandler';
 import { UserContext } from '../context/UserContext';
@@ -16,7 +16,6 @@ import { borrowBook, addBooksToLoan } from '../api/loans';
 import '../styles/HomePage.css';
 
 const { Content } = Layout;
-const { Title } = Typography;
 
 function HomePage() {
   const { user, subscriptionStatus, basket, setBasket } = useContext(UserContext); 
@@ -39,14 +38,14 @@ function HomePage() {
         window.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
   const handleBorrowClick = (book) => {
-    if (!user) {
-      setLoginPrompt({ visible: true });
+    const storedUser = localStorage.getItem('user');
+    if (!user && !storedUser) {
+      setLoginPrompt({ visible: true, content: "You have to login first." });
       return;
     }
     setBorrowModal({ visible: true, book });
@@ -55,6 +54,14 @@ function HomePage() {
   const handleBorrowConfirm = async () => {
     const book = borrowModal.book;
     setBorrowModal({ visible: false, book: null });
+const requestPayload = {
+    subscriptionId: subscriptionStatus.subscriptionId,
+    bookIds: [book.id],
+  };
+
+  console.log("BorrowBook API Request:", requestPayload);
+
+
     try {
       await borrowBook(subscriptionStatus.subscriptionId, book.id);
       setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
@@ -98,38 +105,28 @@ function HomePage() {
           <Features />
 
           <section className="subscription-plans">
-            <Title level={2} className="section-title">Subscription Plans</Title>
-            <Row gutter={[16, 16]} justify="center">
-              {plans.map((plan) => (
-                <Col key={plan.subscriptionPlanID} xs={24} sm={12} md={8}>
-                  <SubscriptionPlanCard
-                    plan={plan}
-                    onSubscribe={handleSubscription}
-                  />
-                </Col>
-              ))}
-            </Row>
+          <h2 className="section-title">Subscription Plans</h2>
+          <div className="subscription-cards-row">
+            {plans.map((plan) => (
+              <SubscriptionPlanCard
+                key={plan.subscriptionPlanID}
+                plan={plan}
+                onSubscribe={handleSubscription}
+              />
+            ))}
+          </div>
           </section>
 
-          <Title level={2} className="book-list-title">Available Books</Title>
-          <BookList
+      
+          <FeaturedBooksSection
             books={books}
             onBorrow={handleBorrowClick}
             onAddToBasket={addToBasket}
+            onBorrowAll={borrowFromBasket}
+            basketCount={basket.length}
           />
-          <div style={{ marginTop: '1rem', textAlign: 'right', width: '100%' }}>
-            <Link to="/all-books">See more &rarr;</Link>
-          </div>
 
-          <Button
-            type="primary"
-            onClick={borrowFromBasket}
-            disabled={basket.length === 0}
-            style={{ marginTop: '1rem', float: 'right' }}
-          >
-            Borrow All from Basket
-          </Button>
-
+        
           <Modal
             open={borrowModal.visible}
             title="Do you want to borrow this book?"
@@ -144,7 +141,6 @@ function HomePage() {
               </div>
             )}
           </Modal>
-
           <Modal
             open={modalInfo.visible}
             title={modalInfo.title}
@@ -158,7 +154,6 @@ function HomePage() {
           >
             {modalInfo.content}
           </Modal>
-
           <Modal
             open={loginPrompt.visible}
             title="Login Required"
@@ -171,9 +166,8 @@ function HomePage() {
             okText="Login"
             cancelText="Cancel"
           >
-            You must be logged in to borrow books. Would you like to log in now?
+            {loginPrompt.content || "You must be logged in to borrow books. Would you like to log in now?"}
           </Modal>
-
           <Modal
             open={subscriptionPrompt.visible}
             title="Confirm Subscription"

@@ -1,62 +1,42 @@
 import axios from 'axios';
 import appsettings from '../appsettings';
 
+function getToken() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.token;
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function fetchBooks() {
-  try {
-    const response = await axios.get(`${appsettings.apiBaseUrl}/books`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    throw error;
-  }
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books`);
+  return response.data;
 }
 
 export async function addBook(bookData) {
-  try {
-    const response = await axios.post(`${appsettings.apiBaseUrl}/books`, bookData);
-    return response.data;
-  } catch (error) {
-    console.error('Error adding book:', error);
-    throw error;
-  }
+  const response = await axios.post(`${appsettings.apiBaseUrl}/books`, bookData, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function updateBook(bookId, bookData) {
-  try {
-    const response = await axios.put(`${appsettings.apiBaseUrl}/books/${bookId}`, bookData);
-    return response.data;
-  } catch (error) {
-    console.error('Error updating book:', error);
-    throw error;
-  }
+  const response = await axios.put(`${appsettings.apiBaseUrl}/books/${bookId}`, bookData, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function getBookById(bookId) {
-  try {
-    const response = await axios.get(`${appsettings.apiBaseUrl}/books/${bookId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching book by ID:', error);
-    throw error;
-  }
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books/${bookId}`);
+  return response.data;
 }
 
 export async function getBooksSorted(order = 'desc') {
-  try {
-    const response = await axios.get(`${appsettings.apiBaseUrl}/books/sorted?order=${order}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching sorted books:', error);
-    throw error;
-  }
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books/sorted?order=${order}`);
+  return response.data;
 }
 
 export async function deleteBook(bookId) {
-  try {
-    const response = await axios.delete(`${appsettings.apiBaseUrl}/books/${bookId}`);
-    return response.data;
-  } catch (error) {
-    console.error('Error deleting book:', error);
-    throw error;
-  }
+  const response = await axios.delete(`${appsettings.apiBaseUrl}/books/${bookId}`, { headers: authHeaders() });
+  return response.data;
 }

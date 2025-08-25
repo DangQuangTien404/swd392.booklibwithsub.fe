@@ -91,7 +91,8 @@ function UserDashboard() {
                   <li>Borrowed Today: {subscriptionStatus.borrowedToday}</li>
                   <li>Borrowed This Month: {subscriptionStatus.borrowedThisMonth}</li>
                   <li>Remaining Today: {subscriptionStatus.remainingToday}</li>
-                  <li>Remaining This Month: {subscriptionStatus.remainingThisMonth}</li> */}
+                  <li>Remaining This Month: {subscriptionStatus.remainingThisMonth}</li> 
+                  DO NOT TOUCH*/}
                 </ul>
               ) : (
                 <p>Loading subscription details...</p>

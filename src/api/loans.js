@@ -1,130 +1,63 @@
 import axios from 'axios';
 import appsettings from '../appsettings';
 
-export async function borrowBook(subscriptionId, bookId) {
-  try {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user || !user.token) {
-      throw new Error('User is not authenticated.');
-    }
+function getToken() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.token;
+}
 
-    const response = await axios.post(
-      `${appsettings.apiBaseUrl}/Loans`,
-      {
-        subscriptionId,
-        bookIds: [bookId],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${user.token}`,
-        },
-      }
-    );
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
-    return response.data;
-  } catch (error) {
-    console.error('Error borrowing book:', error);
-    throw new Error(
-      error.response?.data?.message || 'Failed to borrow the book. Please try again later.'
-    );
-  }
+export async function borrowBook(subscriptionId, bookIds) {
+  const response = await axios.post(
+    `${appsettings.apiBaseUrl}/loans`,
+    { subscriptionId, bookIds },
+    { headers: authHeaders() }
+  );
+  return response.data;
 }
 
 export async function addBooksToLoan(loanId, bookIds) {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
-
-  const response = await fetch(
+  const response = await axios.post(
     `${appsettings.apiBaseUrl}/loans/${loanId}/items`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ bookIds }),
-    }
+    { bookIds },
+    { headers: authHeaders() }
   );
-
-  if (!response.ok) {
-    throw new Error('Failed to add books to loan.');
-  }
-
-  return await response.json();
+  return response.data;
 }
 
 export async function returnLoanedBook(loanItemId) {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
-
-  const response = await fetch(
+  const response = await axios.post(
     `${appsettings.apiBaseUrl}/loans/items/${loanItemId}/return`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+    {},
+    { headers: authHeaders() }
   );
-
-  if (!response.ok) {
-    throw new Error('Failed to return loaned book.');
-  }
+  return response.data;
 }
 
 export async function getLoanHistory() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
-
-  const response = await fetch(`${appsettings.apiBaseUrl}/loans/history`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch loan history.');
-  }
-
-  return await response.json();
+  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/history`, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function getActiveLoans() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
-
-  const response = await fetch(`${appsettings.apiBaseUrl}/loans/active`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch active loans.');
-  }
-
-  return await response.json();
+  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/active`, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function getLoanDetails(loanId) {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
+  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/${loanId}`, { headers: authHeaders() });
+  return response.data;
+}
 
-  const response = await fetch(
-    `${appsettings.apiBaseUrl}/loans/${loanId}`,
-    {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+export async function extendLoan(loanId, { newDueDate, daysToExtend }) {
+  const response = await axios.put(
+    `${appsettings.apiBaseUrl}/loans/${loanId}/extend`,
+    { newDueDate, daysToExtend },
+    { headers: authHeaders() }
   );
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch loan details.');
-  }
-
-  return await response.json();
+  return response.data;
 }

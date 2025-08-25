@@ -1,37 +1,21 @@
+import axios from 'axios';
 import appsettings from '../appsettings';
 
-export async function getCurrentUserProfile() {
+function getToken() {
   const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
+  return user?.token;
+}
 
-  const response = await fetch(`${appsettings.apiBaseUrl}/users/me`, {
-    method: 'GET',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
-  if (!response.ok) {
-    throw new Error('Failed to fetch current user profile.');
-  }
-
-  return await response.json();
+export async function getCurrentUserProfile() {
+  const response = await axios.get(`${appsettings.apiBaseUrl}/users/me`, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function updateCurrentUserProfile(values) {
-  const user = JSON.parse(localStorage.getItem('user'));
-  const token = user?.token;
-
-  const response = await fetch(`${appsettings.apiBaseUrl}/users/me`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-    body: JSON.stringify(values),
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to update current user profile.');
-  }
+  await axios.put(`${appsettings.apiBaseUrl}/users/me`, values, { headers: authHeaders() });
 }

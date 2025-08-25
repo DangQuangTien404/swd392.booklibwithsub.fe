@@ -9,7 +9,7 @@ export const UserProvider = ({ children }) => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
-  const [basket, setBasket] = useState([]); // Add basket state
+  const [basket, setBasket] = useState([]); 
 
   useEffect(() => {
     if (user) {

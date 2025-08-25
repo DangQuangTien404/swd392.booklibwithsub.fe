@@ -1,41 +1,26 @@
-
 import axios from 'axios';
 import appsettings from '../appsettings';
-import { UserContext } from '../context/UserContext';
+
+function getToken() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.token;
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function fetchSubscriptionStatus() {
-  try {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = user?.token;
-
-    const response = await axios.get(`${appsettings.apiBaseUrl}/Subscriptions/status`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching subscription status:', error);
-    throw error;
-  }
+  const response = await axios.get(`${appsettings.apiBaseUrl}/subscriptions/status`, { headers: authHeaders() });
+  return response.data;
 }
 
 export async function purchaseSubscription(planId) {
-  try {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = user?.token;
-    const response = await axios.post(
-      `${appsettings.apiBaseUrl}/subscriptions/purchase`,
-      { planId: planId },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error purchasing subscription:', error);
-    throw error;
-  }
+  const response = await axios.post(
+    `${appsettings.apiBaseUrl}/subscriptions/purchase`,
+    { planId },
+    { headers: authHeaders() }
+  );
+  return response.data;
 }

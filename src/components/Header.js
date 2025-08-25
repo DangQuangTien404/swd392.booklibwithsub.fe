@@ -1,19 +1,18 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Layout, Typography, Button, Menu, Dropdown, Card, message, Modal } from 'antd';
+import React, { useState, useContext } from 'react';
+import { Layout, Button, Menu, Dropdown, Modal, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import LoginModal from './LoginModal';
 import RegisterModal from './RegisterModal';
 import { logout } from '../api/auth';
 import LoanBasket from './LoanBasket';
-import { ShoppingBasketOutlined } from '@mui/icons-material';
+import { ShoppingBasketOutlined, AccountCircle } from '@mui/icons-material';
 import '../styles/Header.css';
 
 const { Header: AntHeader } = Layout;
-const { Title } = Typography;
 
 function Header() {
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser, basket } = useContext(UserContext);
   const [loginVisible, setLoginVisible] = useState(false);
   const [registerVisible, setRegisterVisible] = useState(false);
   const [logoutModal, setLogoutModal] = useState(false);
@@ -64,33 +63,42 @@ function Header() {
   return (
     <AntHeader className="App-header">
       <div className="App-header-title">
-    <Link to="/" className="header-link">BookLib</Link>
-  </div>
-      {userName ? (
-        <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
-          <Dropdown overlay={userMenu} placement="bottomRight" overlayClassName="user-dropdown">
-            <Button className="user-button">
-              {userName}
-            </Button>
-          </Dropdown>
-          <Dropdown
-            overlay={basketMenu}
-            visible={basketVisible}
-            onVisibleChange={(visible) => setBasketVisible(visible)}
-            placement="bottomRight"
+        <Link to="/" className="header-link">BookLib</Link>
+      </div>
+      <div className="header-actions">
+        {userName ? (
+          <>
+            <Dropdown overlay={userMenu} placement="bottomRight" overlayClassName="user-dropdown">
+              <Button className="user-button">
+                <span className="user-avatar">
+                  <AccountCircle style={{ fontSize: 24 }} />
+                </span>
+                {userName}
+              </Button>
+            </Dropdown>
+            <Dropdown
+              overlay={basketMenu}
+              visible={basketVisible}
+              onVisibleChange={setBasketVisible}
+              placement="bottomRight"
+            >
+              <span className="basket-btn-wrapper">
+                <Button className="basket-button" icon={<ShoppingBasketOutlined style={{ fontSize: 24 }} />} />
+                {basket.length > 0 && (
+                  <span className="basket-badge">{basket.length}</span>
+                )}
+              </span>
+            </Dropdown>
+          </>
+        ) : (
+          <Button
+            className="login-button"
+            onClick={() => setLoginVisible(true)}
           >
-            <Button className="basket-button" icon={<ShoppingBasketOutlined />} />
-          </Dropdown>
-        </div>
-      ) : (
-        <Button
-          className="login-button"
-          onClick={() => setLoginVisible(true)}
-        >
-          Login
-        </Button>
-      )}
-
+            Login
+          </Button>
+        )}
+      </div>
       <LoginModal
         visible={loginVisible}
         onClose={() => setLoginVisible(false)}

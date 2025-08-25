@@ -22,7 +22,6 @@
   height: 100%;
 }
 
-/* Logo link styling */
 .header-link {
   color: #fff !important;
   text-decoration: none !important;
@@ -41,11 +40,68 @@
   text-decoration: none !important;
 }
 
-/* User and basket button alignment */
-.App-header > div {
+/* This container now only applies to the right-side actions */
+.header-actions {
   display: flex;
   align-items: center;
   gap: 10px;
   margin-left: auto;
   height: 100%;
+}
+
+/* Remove the old .App-header > div selector! */
+
+/* Button and badge styles remain the same as before */
+.user-button, .basket-button {
+  background: #fff !important;
+  color: #27ae60 !important;
+  border: none !important;
+  border-radius: 999px !important;
+  font-weight: 600;
+  padding: 0.45rem 1.3rem;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(39,174,96,0.06);
+  transition: box-shadow 0.16s, transform 0.16s, background 0.16s, color 0.16s;
+  font-size: 1rem;
+}
+
+.user-button:hover, .basket-button:hover {
+  background: #eaffea !important;
+  color: #219150 !important;
+  box-shadow: 0 4px 14px rgba(39,174,96,0.16);
+  transform: translateY(-1px) scale(1.04);
+}
+
+.user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #d9f5e9;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.5rem;
+  font-size: 1.2rem;
+  color: #27ae60;
+}
+
+.basket-badge {
+  display: inline-block;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  box-shadow: 0 2px 8px rgba(255,77,79,0.15);
+}
+.basket-btn-wrapper {
+  position: relative;
+  display: inline-block;
 }
