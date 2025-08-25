@@ -124,8 +124,9 @@ function HomePage() {
           <HeroSection />
           <Features />
 
-          <section className="subscription-plans">
+          
             <h2 className="section-title">Subscription Plans</h2>
+            <section className="subscription-plans">
             <div className="subscription-cards-row">
               {plans.map((plan) => (
                 <SubscriptionPlanCard
