@@ -18,7 +18,7 @@ function UserDashboard() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [profileForm] = Form.useForm();
 
-  // Load all dashboard data
+
   useEffect(() => {
     const loadSubscriptionStatus = async () => {
       try {
@@ -61,14 +61,14 @@ function UserDashboard() {
     loadLoanHistory();
     loadActiveLoans();
     loadProfile();
-    // eslint-disable-next-line
+
   }, []);
 
   const handleReturnBook = async (loanItemId) => {
     try {
       await returnLoanedBook(loanItemId);
       message.success('Book returned successfully!');
-      // Refresh loans
+
       const [history, activeLoans] = await Promise.all([
         getLoanHistory(),
         getActiveLoans(),
@@ -110,7 +110,7 @@ function UserDashboard() {
             <h1 className="dashboard-title">User Dashboard</h1>
           </div>
 
-          {/* Subscription Management */}
+          
           <section className="UserDashboard-section">
             <h2>Subscription Management</h2>
             <p>Manage your active subscriptions and explore new plans.</p>
@@ -127,7 +127,7 @@ function UserDashboard() {
             </div>
           </section>
 
-          {/* Active Loans */}
+      
           <section className="UserDashboard-section">
             <h2>Active Loans</h2>
             <p>Manage your currently borrowed books.</p>
@@ -159,7 +159,7 @@ function UserDashboard() {
             </div>
           </section>
 
-          {/* Account Details */}
+         
           <section className="UserDashboard-section">
             <h2>Account Details</h2>
             <p>Update your personal information and preferences.</p>

@@ -12,8 +12,10 @@ function authHeaders() {
 }
 
 export async function borrowBook(subscriptionId, bookIds) {
+  console.log('API call - borrowBook with subscriptionId:', subscriptionId, 'bookIds:', bookIds);
+  console.log(appsettings.apiBaseUrl);
   const response = await axios.post(
-    `${appsettings.apiBaseUrl}/loans`,
+    `${appsettings.apiBaseUrl}/Loans`,
     { subscriptionId, bookIds },
     { headers: authHeaders() }
   );

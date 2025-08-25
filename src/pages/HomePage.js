@@ -73,9 +73,11 @@ function HomePage() {
     const book = borrowModal.book;
     setBorrowModal({ visible: false, book: null });
     try {
-      await borrowBook(subscriptionStatus.subscriptionId, book.id);
+      // Log subscriptionId and bookId for debugging
+      console.log('Borrowing with subscriptionId:', subscriptionStatus?.subscriptionId, 'bookId:', book);
+      await borrowBook(subscriptionStatus.subscriptionId, [book.id]);
       setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
-      // Refresh borrowed book IDs after successful borrow
+      
       if (user) {
         const activeLoans = await getActiveLoans();
         setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
