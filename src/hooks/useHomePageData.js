@@ -10,7 +10,7 @@ const useHomePageData = () => {
     const loadBooks = async () => {
       try {
         const data = await getBooksSorted();
-        setBooks(data.slice(0, 3)); // Grab only the first 3 books
+        setBooks(data.slice(0, 3)); 
       } catch (error) {
         console.error('Error loading books:', error);
       }

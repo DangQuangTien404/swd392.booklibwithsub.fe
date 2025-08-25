@@ -3,13 +3,14 @@ import Header from '../components/Header';
 import { Layout, Row, Col, Pagination, Modal, Button } from 'antd';
 import { getBooksSorted } from '../api/books';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
-import { borrowBook } from '../api/loans';
+import { borrowBook, getActiveLoans } from '../api/loans';
 import '../styles/AllBooksPage.css';
 
 const { Content, Footer } = Layout;
 
 function AllBooksPage() {
   const [books, setBooks] = useState([]);
+  const [borrowedBookIds, setBorrowedBookIds] = useState(new Set());
   const [currentPage, setCurrentPage] = useState(1);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [borrowModal, setBorrowModal] = useState({ visible: false, book: null });
@@ -17,31 +18,25 @@ function AllBooksPage() {
   const pageSize = 6;
 
   useEffect(() => {
-    const loadBooks = async () => {
+    async function fetchAll() {
       try {
-        const data = await getBooksSorted();
-        setBooks(data);
-      } catch (error) {
-        console.error('Error loading books:', error);
-      }
-    };
-
-    const loadSubscriptionStatus = async () => {
-      try {
-        const status = await fetchSubscriptionStatus();
-        setSubscriptionStatus(status);
-      } catch (error) {
+        const [booksData, activeLoans, subscription] = await Promise.all([
+          getBooksSorted(),
+          getActiveLoans(),
+          fetchSubscriptionStatus()
+        ]);
+        setBooks(booksData);
+        setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
+        setSubscriptionStatus(subscription);
+      } catch (e) {
+        setBorrowedBookIds(new Set());
         setSubscriptionStatus(null);
       }
-    };
-
-    loadBooks();
-    loadSubscriptionStatus();
+    }
+    fetchAll();
   }, []);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+  const handlePageChange = (page) => setCurrentPage(page);
 
   const handleBorrowClick = (book) => {
     if (!subscriptionStatus || !subscriptionStatus.subscriptionId) {
@@ -57,6 +52,9 @@ function AllBooksPage() {
     try {
       await borrowBook(subscriptionStatus.subscriptionId, book.id);
       setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
+      // Refresh active loans state after borrowing
+      const activeLoans = await getActiveLoans();
+      setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
     } catch (error) {
       setModalInfo({ visible: true, title: 'Borrow Failed', content: 'There was a problem borrowing this book. Please try again.' });
     }
@@ -87,8 +85,10 @@ function AllBooksPage() {
                   <button
                     className="borrow-btn"
                     onClick={() => handleBorrowClick(book)}
+                    disabled={borrowedBookIds.has(book.id)}
+                    style={borrowedBookIds.has(book.id) ? { backgroundColor: '#ccc', cursor: 'not-allowed' } : {}}
                   >
-                    Borrow
+                    {borrowedBookIds.has(book.id) ? 'Already Borrowed' : 'Borrow'}
                   </button>
                 </div>
               </Col>

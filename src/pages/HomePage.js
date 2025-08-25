@@ -11,7 +11,7 @@ import FeaturedBooksSection from '../components/FeaturedBooksSection';
 import useHomePageData from '../hooks/useHomePageData';
 import useSubscriptionHandler from '../hooks/useSubscriptionHandler';
 import { UserContext } from '../context/UserContext';
-import { borrowBook, addBooksToLoan } from '../api/loans'; 
+import { borrowBook, addBooksToLoan, getActiveLoans } from '../api/loans'; 
 
 import '../styles/HomePage.css';
 
@@ -31,6 +31,24 @@ function HomePage() {
 
   const [borrowModal, setBorrowModal] = useState({ visible: false, book: null });
   const [loginPrompt, setLoginPrompt] = useState({ visible: false });
+  const [borrowedBookIds, setBorrowedBookIds] = useState(new Set());
+
+  // Fetch active loans to determine borrowed books
+  useEffect(() => {
+    async function fetchActiveLoans() {
+      if (user) {
+        try {
+          const activeLoans = await getActiveLoans();
+          setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
+        } catch (e) {
+          setBorrowedBookIds(new Set());
+        }
+      } else {
+        setBorrowedBookIds(new Set());
+      }
+    }
+    fetchActiveLoans();
+  }, [user]);
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -54,17 +72,14 @@ function HomePage() {
   const handleBorrowConfirm = async () => {
     const book = borrowModal.book;
     setBorrowModal({ visible: false, book: null });
-const requestPayload = {
-    subscriptionId: subscriptionStatus.subscriptionId,
-    bookIds: [book.id],
-  };
-
-  console.log("BorrowBook API Request:", requestPayload);
-
-
     try {
       await borrowBook(subscriptionStatus.subscriptionId, book.id);
       setModalInfo({ visible: true, title: 'Borrow Successful', content: `You have borrowed "${book.title}"!` });
+      // Refresh borrowed book IDs after successful borrow
+      if (user) {
+        const activeLoans = await getActiveLoans();
+        setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
+      }
     } catch (error) {
       setModalInfo({ visible: true, title: 'Borrow Failed', content: 'There was a problem borrowing this book. Please try again.' });
     }
@@ -89,6 +104,11 @@ const requestPayload = {
       await addBooksToLoan(subscriptionStatus.subscriptionId, bookIds);
       message.success('All books in the basket have been borrowed successfully.');
       setBasket([]); 
+      // Refresh borrowed book IDs after successful borrow
+      if (user) {
+        const activeLoans = await getActiveLoans();
+        setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
+      }
     } catch (error) {
       message.error('Failed to borrow books from the basket. Please try again.');
     }
@@ -105,28 +125,27 @@ const requestPayload = {
           <Features />
 
           <section className="subscription-plans">
-          <h2 className="section-title">Subscription Plans</h2>
-          <div className="subscription-cards-row">
-            {plans.map((plan) => (
-              <SubscriptionPlanCard
-                key={plan.subscriptionPlanID}
-                plan={plan}
-                onSubscribe={handleSubscription}
-              />
-            ))}
-          </div>
+            <h2 className="section-title">Subscription Plans</h2>
+            <div className="subscription-cards-row">
+              {plans.map((plan) => (
+                <SubscriptionPlanCard
+                  key={plan.subscriptionPlanID}
+                  plan={plan}
+                  onSubscribe={handleSubscription}
+                />
+              ))}
+            </div>
           </section>
 
-      
           <FeaturedBooksSection
             books={books}
             onBorrow={handleBorrowClick}
             onAddToBasket={addToBasket}
             onBorrowAll={borrowFromBasket}
             basketCount={basket.length}
+            borrowedBookIds={borrowedBookIds}
           />
 
-        
           <Modal
             open={borrowModal.visible}
             title="Do you want to borrow this book?"
