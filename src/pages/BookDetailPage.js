@@ -58,14 +58,18 @@ function BookDetailPage() {
     setActionLoading(false);
   };
 
-  const handleAddToBasket = () => {
+    const handleAddToBasket = () => {
+    if (!user) {
+        message.warning('You need to be logged in to add books to your basket.');
+        return;
+    }
     if (inBasket) {
-      message.info('This book is already in your basket.');
-      return;
+        message.info('This book is already in your basket.');
+        return;
     }
     setBasket([...basket, book]);
     message.success('Book added to basket!');
-  };
+    };
 
   return (
     <div className="App">
@@ -101,20 +105,20 @@ function BookDetailPage() {
                   <li><span>Available Copies:</span> {book.availableCopies}</li>
                 </ul>
                 <div className="book-detail-actions">
-                  <Button
-                    type="primary"
-                    onClick={handleBorrow}
-                    disabled={alreadyBorrowed || actionLoading}
-                    loading={actionLoading}
-                  >
-                    {alreadyBorrowed ? 'Already Borrowed' : 'Borrow'}
-                  </Button>
-                  <Button
-                    onClick={handleAddToBasket}
-                    disabled={inBasket}
-                  >
-                    {inBasket ? 'In Basket' : 'Add to Basket'}
-                  </Button>
+                <Button
+                type="primary"
+                onClick={handleBorrow}
+                disabled={!user || alreadyBorrowed || actionLoading}
+                loading={actionLoading}
+                >
+                {alreadyBorrowed ? 'Already Borrowed' : 'Borrow'}
+                </Button>
+                <Button
+                onClick={handleAddToBasket}
+                disabled={!user || inBasket}
+                >
+                {inBasket ? 'In Basket' : 'Add to Basket'}
+                </Button>
                 </div>
               </div>
             </Card>
