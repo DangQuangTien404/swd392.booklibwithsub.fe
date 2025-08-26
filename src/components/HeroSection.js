@@ -15,7 +15,6 @@ function HeroSection() {
         <Paragraph className="hero-subtitle">
           Your gateway to thousands of books anytime, anywhere.
         </Paragraph>
-        <button className="hero-button">Get Started</button>
       </div>
     </section>
   );
