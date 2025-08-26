@@ -8,14 +8,14 @@ function getToken() {
 
 function authHeaders() {
   const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json' };
 }
 
 export async function borrowBook(subscriptionId, bookIds) {
-  console.log('API call - borrowBook with subscriptionId:', subscriptionId, 'bookIds:', bookIds);
-  console.log(appsettings.apiBaseUrl);
   const response = await axios.post(
-    `${appsettings.apiBaseUrl}/Loans`,
+    `${appsettings.apiBaseUrl}/loans`,
     { subscriptionId, bookIds },
     { headers: authHeaders() }
   );
@@ -34,24 +34,33 @@ export async function addBooksToLoan(loanId, bookIds) {
 export async function returnLoanedBook(loanItemId) {
   const response = await axios.post(
     `${appsettings.apiBaseUrl}/loans/items/${loanItemId}/return`,
-    {},
+    null,
     { headers: authHeaders() }
   );
   return response.data;
 }
 
 export async function getLoanHistory() {
-  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/history`, { headers: authHeaders() });
+  const response = await axios.get(
+    `${appsettings.apiBaseUrl}/loans/history`,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
 
 export async function getActiveLoans() {
-  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/active`, { headers: authHeaders() });
+  const response = await axios.get(
+    `${appsettings.apiBaseUrl}/loans/active`,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
 
 export async function getLoanDetails(loanId) {
-  const response = await axios.get(`${appsettings.apiBaseUrl}/loans/${loanId}`, { headers: authHeaders() });
+  const response = await axios.get(
+    `${appsettings.apiBaseUrl}/loans/${loanId}`,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
 
