@@ -27,19 +27,7 @@ function BookDetailPage() {
   const [delConfirm, setDelConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  // Inline admin checker (context first, then localStorage fallback)
-  const isAdmin = (() => {
-    const roleFromCtx = user?.userRole;
-    let role = roleFromCtx;
-    if (!role) {
-      try {
-        role = JSON.parse(localStorage.getItem('user'))?.userRole;
-      } catch {
-        role = null;
-      }
-    }
-    return typeof role === 'string' && role.toLowerCase() === 'admin';
-  })();
+  const isAdmin = user?.userRole?.toLowerCase?.() === 'admin';
 
   async function refresh() {
     setLoading(true);
@@ -80,12 +68,12 @@ function BookDetailPage() {
     }
     setActionLoading(true);
     try {
-      // If your API expects an array, change to [Number(id)]
+      // Use single ID for single borrow
       await borrowBook(subscriptionStatus.subscriptionId, Number(id));
       message.success(`You have borrowed "${book.title}"!`);
       const activeLoans = await getActiveLoans();
       setBorrowedBookIds(new Set(activeLoans.map(item => item.bookId)));
-      // Optimistic UI
+      // optimistically decrement available
       setBook(prev => prev ? { ...prev, availableCopies: Math.max(0, (prev.availableCopies ?? 0) - 1) } : prev);
     } catch {
       message.error('Borrow failed. Please try again.');
@@ -109,10 +97,6 @@ function BookDetailPage() {
 
   // ---------- Admin: Edit ----------
   const openEdit = () => {
-    if (!isAdmin) {
-      message.error('You do not have permission to edit books.');
-      return;
-    }
     if (!book) return;
     editForm.setFieldsValue({
       title: book.title,
@@ -128,10 +112,6 @@ function BookDetailPage() {
   };
 
   const submitEdit = async () => {
-    if (!isAdmin) {
-      message.error('You do not have permission to edit books.');
-      return;
-    }
     try {
       const values = await editForm.validateFields();
       setEditing(true);
@@ -142,17 +122,13 @@ function BookDetailPage() {
     } catch (err) {
       const status = err?.response?.status;
       const msg = err?.response?.data?.message;
-      if (status === 403) {
-        message.error('You do not have permission to perform this action.');
-      } else {
-        message.error(status === 409 ? (msg || 'ISBN already exists.') : (msg || 'Update failed.'));
-      }
+      message.error(status === 409 ? (msg || 'ISBN already exists.') : (msg || 'Update failed.'));
     } finally {
       setEditing(false);
     }
   };
 
-  // Keep availableCopies ≤ totalCopies
+  // ensure availableCopies ≤ totalCopies
   const onEditValuesChange = (_, all) => {
     const t = Number(all.totalCopies ?? 0);
     const a = Number(all.availableCopies ?? 0);
@@ -162,20 +138,8 @@ function BookDetailPage() {
   };
 
   // ---------- Admin: Delete ----------
-  const openDelete = () => {
-    if (!isAdmin) {
-      message.error('You do not have permission to delete books.');
-      return;
-    }
-    setDelConfirm(true);
-  };
-
+  const openDelete = () => setDelConfirm(true);
   const confirmDelete = async () => {
-    if (!isAdmin) {
-      message.error('You do not have permission to delete books.');
-      setDelConfirm(false);
-      return;
-    }
     if (!book) return;
     try {
       setDeleting(true);
@@ -183,9 +147,8 @@ function BookDetailPage() {
       message.success('Book deleted.');
       navigate('/all-books');
     } catch (err) {
-      const status = err?.response?.status;
       const msg = err?.response?.data?.message || 'Delete failed.';
-      message.error(status === 403 ? 'You do not have permission to perform this action.' : msg);
+      message.error(msg);
     } finally {
       setDeleting(false);
       setDelConfirm(false);
