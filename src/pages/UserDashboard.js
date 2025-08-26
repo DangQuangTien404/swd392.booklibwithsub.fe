@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Form, Input, Button, message, Spin } from 'antd';
+import { Layout, Form, Input, Button, message, Spin, Modal } from 'antd';
 import Header from '../components/Header';
 import Card from '../components/Card';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
@@ -16,8 +16,9 @@ function UserDashboard() {
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [editingProfile, setEditingProfile] = useState(false);
+  const [activeLoansLoading, setActiveLoansLoading] = useState(false);
+  const [returnModal, setReturnModal] = useState({ visible: false, loanItemId: null });
   const [profileForm] = Form.useForm();
-
 
   useEffect(() => {
     const loadSubscriptionStatus = async () => {
@@ -37,12 +38,14 @@ function UserDashboard() {
       }
     };
     const loadActiveLoans = async () => {
+      setActiveLoansLoading(true);
       try {
         const activeLoans = await getActiveLoans();
         setActiveLoans(activeLoans);
       } catch (error) {
         setActiveLoans([]);
       }
+      setActiveLoansLoading(false);
     };
     const loadProfile = async () => {
       setProfileLoading(true);
@@ -61,14 +64,20 @@ function UserDashboard() {
     loadLoanHistory();
     loadActiveLoans();
     loadProfile();
-
   }, []);
 
-  const handleReturnBook = async (loanItemId) => {
-    try {
-      await returnLoanedBook(loanItemId);
-      message.success('Book returned successfully!');
+  // Show confirmation modal before returning book
+  const handleReturnBook = (loanItemId) => {
+    setReturnModal({ visible: true, loanItemId });
+  };
 
+  // When user confirms on modal
+  const confirmReturnBook = async () => {
+    setActiveLoansLoading(true);
+    try {
+      await returnLoanedBook(returnModal.loanItemId);
+      message.success('Book returned successfully!');
+      // Refresh loan data
       const [history, activeLoans] = await Promise.all([
         getLoanHistory(),
         getActiveLoans(),
@@ -78,6 +87,13 @@ function UserDashboard() {
     } catch (error) {
       message.error('Failed to return book. Please try again.');
     }
+    setActiveLoansLoading(false);
+    setReturnModal({ visible: false, loanItemId: null });
+  };
+
+  // Cancel modal
+  const cancelReturnBook = () => {
+    setReturnModal({ visible: false, loanItemId: null });
   };
 
   const handleProfileEdit = () => {
@@ -110,7 +126,6 @@ function UserDashboard() {
             <h1 className="dashboard-title">User Dashboard</h1>
           </div>
 
-          
           <section className="UserDashboard-section">
             <h2>Subscription Management</h2>
             <p>Manage your active subscriptions and explore new plans.</p>
@@ -127,41 +142,52 @@ function UserDashboard() {
             </div>
           </section>
 
-      
           <section className="UserDashboard-section">
             <h2>Active Loans</h2>
             <p>Manage your currently borrowed books.</p>
             <div className="UserDashboard-card">
-              {activeLoans && activeLoans.length > 0 ? (
-            <ul>
-              {activeLoans.map((loan) =>
-                loan.items.map((item) => (
-                  <li key={item.loanItemID} style={{ marginBottom: 10 }}>
-                    <strong>Book ID: {item.bookID}</strong>
-                    <span style={{ marginLeft: 12, color: '#888' }}>
-                      {item.dueDate
-                        ? `Due: ${new Date(item.dueDate).toLocaleDateString()}`
-                        : '- No due date'}
-                    </span>
-                    <Button
-                      type="link"
-                      style={{ marginLeft: 20, padding: 0 }}
-                      onClick={() => handleReturnBook(item.loanItemID)}
-                      danger
-                    >
-                      Return Book
-                    </Button>
-                  </li>
-                ))
+              {activeLoansLoading ? (
+                <Spin tip="Loading active loans..." />
+              ) : activeLoans && activeLoans.length > 0 ? (
+                <ul>
+                  {activeLoans.map((loan) =>
+                    loan.items.map((item) => (
+                      <li key={item.loanItemID} style={{ marginBottom: 10 }}>
+                        <strong>Book ID: {item.bookID}</strong>
+                        <span style={{ marginLeft: 12, color: '#888' }}>
+                          {item.dueDate
+                            ? `Due: ${new Date(item.dueDate).toLocaleDateString()}`
+                            : '- No due date'}
+                        </span>
+                        <Button
+                          type="link"
+                          style={{ marginLeft: 20, padding: 0 }}
+                          onClick={() => handleReturnBook(item.loanItemID)}
+                          danger
+                        >
+                          Return Book
+                        </Button>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              ) : (
+                <div style={{ color: '#888' }}>No active loans.</div>
               )}
-            </ul>
-          ) : (
-            <div style={{ color: '#888' }}>No active loans.</div>
-          )}
             </div>
+
+            <Modal
+              open={returnModal.visible}
+              title="Return Book Confirmation"
+              onOk={confirmReturnBook}
+              onCancel={cancelReturnBook}
+              okText="Return"
+              cancelText="Cancel"
+            >
+              Are you sure you want to return this book?
+            </Modal>
           </section>
 
-         
           <section className="UserDashboard-section">
             <h2>Account Details</h2>
             <p>Update your personal information and preferences.</p>
