@@ -8,7 +8,9 @@ function getToken() {
 
 function authHeaders() {
   const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  return token
+    ? { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }
+    : { 'Content-Type': 'application/json' };
 }
 
 export async function fetchBooks() {
@@ -17,12 +19,20 @@ export async function fetchBooks() {
 }
 
 export async function addBook(bookData) {
-  const response = await axios.post(`${appsettings.apiBaseUrl}/books`, bookData, { headers: authHeaders() });
+  const response = await axios.post(
+    `${appsettings.apiBaseUrl}/books`,
+    bookData,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
 
 export async function updateBook(bookId, bookData) {
-  const response = await axios.put(`${appsettings.apiBaseUrl}/books/${bookId}`, bookData, { headers: authHeaders() });
+  const response = await axios.put(
+    `${appsettings.apiBaseUrl}/books/${bookId}`,
+    bookData,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
 
@@ -37,6 +47,9 @@ export async function getBooksSorted(order = 'desc') {
 }
 
 export async function deleteBook(bookId) {
-  const response = await axios.delete(`${appsettings.apiBaseUrl}/books/${bookId}`, { headers: authHeaders() });
+  const response = await axios.delete(
+    `${appsettings.apiBaseUrl}/books/${bookId}`,
+    { headers: authHeaders() }
+  );
   return response.data;
 }
