@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import { Layout, Form, Input, Button, message, Spin, Modal } from 'antd';
+import React, { useEffect, useState, useContext } from 'react';
+import { Layout, Button, Spin, Modal, Form, Input, message } from 'antd';
 import Header from '../components/Header';
-import Card from '../components/Card';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
 import { updateCurrentUserProfile, getCurrentUserProfile } from '../api/users';
 import { getLoanHistory, getActiveLoans, returnLoanedBook } from '../api/loans';
 import { getBookById } from '../api/books';
+import { UserContext } from '../context/UserContext';
 import '../styles/UserDashboard.css';
 
 const { Content } = Layout;
 
 function UserDashboard() {
+  const { user, setUser } = useContext(UserContext);
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [loanHistory, setLoanHistory] = useState([]);
   const [activeLoans, setActiveLoans] = useState([]);
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [editingProfile, setEditingProfile] = useState(false);
   const [activeLoansLoading, setActiveLoansLoading] = useState(false);
   const [returnModal, setReturnModal] = useState({ visible: false, loanItemId: null });
-  const [bookNames, setBookNames] = useState({}); // Map of bookID -> bookTitle
+  const [bookNames, setBookNames] = useState({});
+  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  const [profileModalEditing, setProfileModalEditing] = useState(false);
   const [profileForm] = Form.useForm();
 
   useEffect(() => {
@@ -43,8 +45,6 @@ function UserDashboard() {
       setActiveLoansLoading(true);
       try {
         const activeLoans = await getActiveLoans();
-
-        // Gather all unique bookIDs from activeLoans
         const bookIDs = [];
         activeLoans.forEach(loan =>
           loan.items.forEach(item => {
@@ -53,7 +53,6 @@ function UserDashboard() {
             }
           })
         );
-        // Fetch all book names
         const bookNameMap = {};
         await Promise.all(
           bookIDs.map(async bookID => {
@@ -66,7 +65,6 @@ function UserDashboard() {
           })
         );
         setBookNames(bookNameMap);
-
         setActiveLoans(activeLoans);
       } catch (error) {
         setActiveLoans([]);
@@ -85,32 +83,26 @@ function UserDashboard() {
         setProfileLoading(false);
       }
     };
-
     loadSubscriptionStatus();
     loadLoanHistory();
     loadActiveLoans();
     loadProfile();
   }, []);
 
-  // Show confirmation modal before returning book
   const handleReturnBook = (loanItemId) => {
     setReturnModal({ visible: true, loanItemId });
   };
 
-  // When user confirms on modal
   const confirmReturnBook = async () => {
     setActiveLoansLoading(true);
     try {
       await returnLoanedBook(returnModal.loanItemId);
       message.success('Book returned successfully!');
-      // Refresh loan data and book names
       const [history, activeLoans] = await Promise.all([
         getLoanHistory(),
         getActiveLoans(),
       ]);
       setLoanHistory(history);
-
-      // Re-fetch book names for active loans
       const bookIDs = [];
       activeLoans.forEach(loan =>
         loan.items.forEach(item => {
@@ -131,7 +123,6 @@ function UserDashboard() {
         })
       );
       setBookNames(bookNameMap);
-
       setActiveLoans(activeLoans);
     } catch (error) {
       message.error('Failed to return book. Please try again.');
@@ -140,27 +131,33 @@ function UserDashboard() {
     setReturnModal({ visible: false, loanItemId: null });
   };
 
-  // Cancel modal
   const cancelReturnBook = () => {
     setReturnModal({ visible: false, loanItemId: null });
   };
 
-  const handleProfileEdit = () => {
-    setEditingProfile(true);
+  const openProfileModal = () => {
+    setProfileModalOpen(true);
+    setProfileModalEditing(true);
     profileForm.setFieldsValue(profile);
   };
 
-  const handleProfileCancel = () => {
-    setEditingProfile(false);
+  const closeProfileModal = () => {
+    setProfileModalOpen(false);
+    setProfileModalEditing(false);
+    profileForm.resetFields();
     profileForm.setFieldsValue(profile);
   };
 
-  const handleProfileSave = async (values) => {
+  const handleProfileModalSave = async () => {
     try {
+      const values = await profileForm.validateFields();
       await updateCurrentUserProfile(values);
+      const newProfile = await getCurrentUserProfile();
+      setProfile(newProfile);
       message.success('Profile updated!');
-      setEditingProfile(false);
-      setProfile(values);
+      setUser && setUser({ ...user, ...newProfile });
+      setProfileModalEditing(false);
+      closeProfileModal();
     } catch (error) {
       message.error('Failed to update profile.');
     }
@@ -174,7 +171,6 @@ function UserDashboard() {
           <div className="UserDashboard-header">
             <h1 className="dashboard-title">User Dashboard</h1>
           </div>
-
           <section className="UserDashboard-section">
             <h2>Subscription Management</h2>
             <p>Manage your active subscriptions and explore new plans.</p>
@@ -190,7 +186,6 @@ function UserDashboard() {
               )}
             </div>
           </section>
-
           <section className="UserDashboard-section">
             <h2>Active Loans</h2>
             <p>Manage your currently borrowed books.</p>
@@ -201,11 +196,11 @@ function UserDashboard() {
                 <ul>
                   {activeLoans.map((loan) =>
                     loan.items.map((item) => (
-                      <li key={item.loanItemID} style={{ marginBottom: 10 }}>
+                      <li key={item.loanItemId || item.loanItemID} style={{ marginBottom: 10 }}>
                         <strong>
                           {bookNames[item.bookID] || `Book ID: ${item.bookID}`}
                         </strong>
-                        <span style={{ marginLeft: 12, color: '#888' }}>
+                        <span style={{ marginLeft: 15, color: '#888' }}>
                           {item.dueDate
                             ? `Due: ${new Date(item.dueDate).toLocaleDateString()}`
                             : '- No due date'}
@@ -213,7 +208,7 @@ function UserDashboard() {
                         <Button
                           type="link"
                           style={{ marginLeft: 20, padding: 0 }}
-                          onClick={() => handleReturnBook(item.loanItemID)}
+                          onClick={() => handleReturnBook(item.loanItemId || item.loanItemID)}
                           danger
                         >
                           Return Book
@@ -226,7 +221,6 @@ function UserDashboard() {
                 <div style={{ color: '#888' }}>No active loans.</div>
               )}
             </div>
-
             <Modal
               open={returnModal.visible}
               title="Return Book Confirmation"
@@ -238,7 +232,6 @@ function UserDashboard() {
               Are you sure you want to return this book?
             </Modal>
           </section>
-
           <section className="UserDashboard-section">
             <h2>Account Details</h2>
             <p>Update your personal information and preferences.</p>
@@ -246,15 +239,41 @@ function UserDashboard() {
               {profileLoading ? (
                 <Spin tip="Loading profile..." />
               ) : (
-                <Form
-                  form={profileForm}
-                  layout="vertical"
-                  initialValues={profile}
-                  onFinish={handleProfileSave}
-                  disabled={!editingProfile}
-                  style={{ width: '100%', maxWidth: 400 }}
-                >
-                  <Form.Item label="Full Name" name="fullName">
+                <>
+                  <table style={{ width: '100%', marginBottom: 16 }}>
+                    <tbody>
+                      <tr>
+                        <td><b>Full Name</b></td>
+                        <td>{profile?.fullName}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Email</b></td>
+                        <td>{profile?.email}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Phone Number</b></td>
+                        <td>{profile?.phone}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <Button type="primary" onClick={openProfileModal}>Edit Profile</Button>
+                </>
+              )}
+              <Modal
+                open={profileModalOpen}
+                title="Profile"
+                onCancel={closeProfileModal}
+                footer={
+                  <>
+                    <Button type="primary" onClick={handleProfileModalSave} style={{ marginRight: 8 }}>
+                      Save
+                    </Button>
+                    <Button onClick={closeProfileModal}>Cancel</Button>
+                  </>
+                }
+              >
+                <Form form={profileForm} layout="vertical">
+                  <Form.Item label="Full Name" name="fullName" rules={[{ required: true }]}>
                     <Input />
                   </Form.Item>
                   <Form.Item label="Email" name="email">
@@ -263,20 +282,8 @@ function UserDashboard() {
                   <Form.Item label="Phone Number" name="phone">
                     <Input />
                   </Form.Item>
-                  <Form.Item>
-                    {editingProfile ? (
-                      <>
-                        <Button type="primary" htmlType="submit" style={{ marginRight: 8 }}>
-                          Save
-                        </Button>
-                        <Button onClick={handleProfileCancel}>Cancel</Button>
-                      </>
-                    ) : (
-                      <Button onClick={handleProfileEdit}>Edit Profile</Button>
-                    )}
-                  </Form.Item>
                 </Form>
-              )}
+              </Modal>
             </div>
           </section>
         </Content>
