@@ -1,22 +1,31 @@
-import http from './http';
+import axios from 'axios';
+import appsettings from '../appsettings';
+
+function getToken() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user?.token;
+}
+
+function authHeaders() {
+  const token = getToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export async function login(values) {
-  const res = await http.post('/auth/login', values);
-  const data = res.data;
-  if (data && data.token) localStorage.setItem('user', JSON.stringify(data));
-  return data;
+  const response = await axios.post(`${appsettings.apiBaseUrl}/auth/login`, values);
+  return response.data;
 }
 
 export async function register(values) {
-  const res = await http.post('/auth/register', values);
-  return res.data;
+  const response = await axios.post(`${appsettings.apiBaseUrl}/auth/register`, values);
+  return response.data;
 }
 
 export async function logout() {
-  try { await http.post('/auth/logout', {}); } finally { localStorage.removeItem('user'); }
+  await axios.post(`${appsettings.apiBaseUrl}/auth/logout`, {}, { headers: authHeaders() });
+  localStorage.removeItem('user');
 }
 
 export async function updateUser(userId, values) {
-  const res = await http.put(`/auth/users/${userId}`, values);
-  return res.data;
+  await axios.put(`${appsettings.apiBaseUrl}/auth/users/${userId}`, values, { headers: authHeaders() });
 }

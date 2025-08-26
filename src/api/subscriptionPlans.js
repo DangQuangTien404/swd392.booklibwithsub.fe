@@ -1,7 +1,7 @@
-
-import http from './http';
+import axios from 'axios';
+import appsettings from '../appsettings';
 
 export async function fetchSubscriptionPlans() {
-  const res = await http.get('/subscriptionplans');
-  return res.data;
+  const response = await axios.get(`${appsettings.apiBaseUrl}/subscriptionplans`);
+  return response.data;
 }
