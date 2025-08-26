@@ -1,21 +1,12 @@
-import axios from 'axios';
-import appsettings from '../appsettings';
 
-function getToken() {
-  const user = JSON.parse(localStorage.getItem('user'));
-  return user?.token;
-}
-
-function authHeaders() {
-  const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+import http from './http';
 
 export async function getCurrentUserProfile() {
-  const response = await axios.get(`${appsettings.apiBaseUrl}/users/me`, { headers: authHeaders() });
-  return response.data;
+  const res = await http.get('/users/me');
+  return res.data;
 }
 
 export async function updateCurrentUserProfile(values) {
-  await axios.put(`${appsettings.apiBaseUrl}/users/me`, values, { headers: authHeaders() });
+  const res = await http.put('/users/me', values);
+  return res.data;
 }
