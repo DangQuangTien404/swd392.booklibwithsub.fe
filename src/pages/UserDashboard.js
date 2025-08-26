@@ -133,29 +133,31 @@ function UserDashboard() {
             <p>Manage your currently borrowed books.</p>
             <div className="UserDashboard-card">
               {activeLoans && activeLoans.length > 0 ? (
-                <ul>
-                  {activeLoans.map((loan) => (
-                    <li key={loan.id} style={{ marginBottom: 10 }}>
-                      <strong>{loan.bookTitle || "Book"}</strong>
-                      <span style={{ marginLeft: 12, color: '#888' }}>
-                        {loan.dueDate
-                          ? `Due: ${new Date(loan.dueDate).toLocaleDateString()}`
-                          : '- No due date'}
-                      </span>
-                      <Button
-                        type="link"
-                        style={{ marginLeft: 20, padding: 0 }}
-                        onClick={() => handleReturnBook(loan.id)}
-                        danger
-                      >
-                        Return Book
-                      </Button>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <div style={{ color: '#888' }}>No active loans.</div>
+            <ul>
+              {activeLoans.map((loan) =>
+                loan.items.map((item) => (
+                  <li key={item.loanItemID} style={{ marginBottom: 10 }}>
+                    <strong>Book ID: {item.bookID}</strong>
+                    <span style={{ marginLeft: 12, color: '#888' }}>
+                      {item.dueDate
+                        ? `Due: ${new Date(item.dueDate).toLocaleDateString()}`
+                        : '- No due date'}
+                    </span>
+                    <Button
+                      type="link"
+                      style={{ marginLeft: 20, padding: 0 }}
+                      onClick={() => handleReturnBook(item.loanItemID)}
+                      danger
+                    >
+                      Return Book
+                    </Button>
+                  </li>
+                ))
               )}
+            </ul>
+          ) : (
+            <div style={{ color: '#888' }}>No active loans.</div>
+          )}
             </div>
           </section>
 
