@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Modal, Form, Input, Button, Typography } from 'antd';
 import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
 import '../styles/LoginModal.css';
 import { login } from '../api/auth';
 import { UserContext } from '../context/UserContext';
@@ -10,11 +9,11 @@ const { Text } = Typography;
 
 function LoginModal({ visible, onClose, switchToRegister }) {
   const { setUser } = useContext(UserContext);
-  const [notice, setNotice] = useState({ visible: false, type: '', title: '', content: '' });
+  const [notice, setNotice] = useState({ visible: false, title: '', content: '' });
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
 
-  const handleNoticeClose = () => setNotice({ visible: false, type: '', title: '', content: '' });
+  const handleNoticeClose = () => setNotice({ visible: false, title: '', content: '' });
 
   const onFinish = async (values) => {
     setLoading(true);
@@ -29,67 +28,26 @@ function LoginModal({ visible, onClose, switchToRegister }) {
         decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ||
         decodedToken['role'];
 
-      // Persist
       const userObj = { token: data.token, userName, userRole };
       localStorage.setItem('user', JSON.stringify(userObj));
       setUser(userObj);
 
-      setNotice({ visible: true, type: 'success', title: 'Login Successful', content: `Welcome, ${userName || 'user'}!` });
+      setNotice({
+        visible: true,
+        title: 'Login Successful',
+        content: `Welcome, ${userName || 'user'}!`
+      });
       onClose();
       form.resetFields();
     } catch (err) {
-      // Default message
-      let title = 'Login Failed';
-      let content = 'Login failed. Please try again.';
-
-      // Handle axios errors specifically
-      if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-        const data = err.response?.data;
-
-        // Try to get a meaningful server message
-        const serverMsg =
-          (typeof data === 'string' && data) ||
-          data?.message ||
-          data?.error ||
-          null;
-
-        // User-caused errors (bad credentials / validation)
-        if (status === 400 || status === 401) {
-          content = serverMsg || 'Invalid username or password.';
-          // Mark fields as errored so user sees it inline
-          form.setFields([
-            { name: 'username', errors: [' '] }, // space to show red state without extra text
-            { name: 'password', errors: [content] },
-          ]);
-        }
-        // Rate limit
-        else if (status === 429) {
-          content = serverMsg || 'Too many attempts. Please wait a moment and try again.';
-        }
-        // Other server responses
-        else if (status) {
-          content = serverMsg || `Server returned ${status}. Please try again.`;
-        }
-        // Network / CORS / timeout
-        else if (!err.response) {
-          content = 'Network error. Check your connection and try again.';
-        }
-      } else if (err && err.message) {
-        content = err.message;
-      }
-
-      setNotice({ visible: true, type: 'error', title, content });
+      setNotice({
+        visible: true,
+        title: 'Login Failed',
+        content: 'Invalid username or password.'
+      });
     } finally {
       setLoading(false);
     }
-  };
-
-  // Clear per-field error as user types again
-  const onValuesChange = (changed, all) => {
-    const changedField = Object.keys(changed)[0];
-    if (!changedField) return;
-    form.setFields([{ name: changedField, errors: [] }]);
   };
 
   return (
@@ -107,17 +65,13 @@ function LoginModal({ visible, onClose, switchToRegister }) {
           name="login"
           layout="vertical"
           onFinish={onFinish}
-          onValuesChange={onValuesChange}
           style={{ maxWidth: '400px', margin: '0 auto' }}
           initialValues={{ username: '', password: '' }}
         >
           <Form.Item
             label="Username"
             name="username"
-            rules={[
-              { required: true, message: 'Please input your username!' },
-              { max: 100, message: 'Username is too long.' },
-            ]}
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Input autoComplete="username" disabled={loading} />
           </Form.Item>
@@ -125,10 +79,7 @@ function LoginModal({ visible, onClose, switchToRegister }) {
           <Form.Item
             label="Password"
             name="password"
-            rules={[
-              { required: true, message: 'Please input your password!' },
-              { min: 4, message: 'Password is too short.' },
-            ]}
+            rules={[{ required: true, message: 'Please input your password!' }]}
           >
             <Input.Password autoComplete="current-password" disabled={loading} />
           </Form.Item>

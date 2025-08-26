@@ -11,21 +11,25 @@ function authHeaders() {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-export async function login(values) {
-  const response = await axios.post(`${appsettings.apiBaseUrl}/auth/login`, values);
-  return response.data;
+export async function login({ username, password }) {
+  const { data } = await axios.post(`${appsettings.apiBaseUrl}/auth/login`, { username, password });
+  return data; 
 }
 
 export async function register(values) {
-  const response = await axios.post(`${appsettings.apiBaseUrl}/auth/register`, values);
-  return response.data;
+
+  const payload = {
+    username: values.username?.trim(),
+    password: values.password,
+    fullName: values.fullName?.trim(),
+    email: values.email?.trim(),
+    phone: values.phone ?? values.phoneNumber, 
+  };
+  const { data } = await axios.post(`${appsettings.apiBaseUrl}/auth/register`, payload);
+  return data;
 }
 
 export async function logout() {
   await axios.post(`${appsettings.apiBaseUrl}/auth/logout`, {}, { headers: authHeaders() });
   localStorage.removeItem('user');
-}
-
-export async function updateUser(userId, values) {
-  await axios.put(`${appsettings.apiBaseUrl}/auth/users/${userId}`, values, { headers: authHeaders() });
 }

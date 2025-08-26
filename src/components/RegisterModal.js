@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Modal, Form, Input, Button, Typography } from 'antd';
-import axios from 'axios';
 import '../styles/RegisterModal.css';
 import { register } from '../api/auth';
 
@@ -27,70 +26,25 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
         content: 'Your account has been created. Please log in.',
       });
 
-      // Auto-close & switch to login
       onClose?.();
       switchToLogin?.();
       form.resetFields();
     } catch (err) {
-      let title = 'Registration Failed';
-      let content = 'Registration failed. Please check your details and try again.';
-
-      if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-        const data = err.response?.data;
-        const serverMsg =
-          (typeof data === 'string' && data) ||
-          data?.message ||
-          data?.error ||
-          null;
-
-        // Common user-caused cases
-        if (status === 400) {
-          content = serverMsg || 'Some fields are invalid. Please fix them and try again.';
-          // If BE returns field-level validation, map it here.
-          // Example shape: { errors: { username: 'taken' } }
-          const fieldErrors = data?.errors || {};
-          const fields = Object.keys(fieldErrors).map((name) => ({
-            name,
-            errors: [String(fieldErrors[name])],
-          }));
-          if (fields.length) form.setFields(fields);
-        } else if (status === 409) {
-          // Conflict: username or email already exists
-          content = serverMsg || 'Username or email already exists.';
-          // Try to highlight likely fields
-          form.setFields([
-            { name: 'username', errors: [' '] },
-            { name: 'email', errors: [content] },
-          ]);
-        } else if (status === 429) {
-          content = serverMsg || 'Too many attempts. Please wait a moment and try again.';
-        } else if (status) {
-          content = serverMsg || `Server returned ${status}. Please try again.`;
-        } else if (!err.response) {
-          content = 'Network error. Please check your connection and try again.';
-        }
-      } else if (err?.message) {
-        content = err.message;
-      }
-
-      setNotice({ visible: true, title, content });
+      setNotice({
+        visible: true,
+        title: 'Registration Failed',
+        content: 'Registration failed. Please try again.',
+      });
     } finally {
       setLoading(false);
     }
-  };
-
-  // Clear field error as user edits
-  const onValuesChange = (changed) => {
-    const name = Object.keys(changed)[0];
-    if (name) form.setFields([{ name, errors: [] }]);
   };
 
   return (
     <>
       <Modal
         title={<div className="modal-title">Register</div>}
-        open={visible}            // if you're on AntD v4, change to `visible={visible}`
+        open={visible}
         onCancel={onClose}
         footer={null}
         destroyOnClose
@@ -101,19 +55,14 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
           name="register"
           layout="vertical"
           onFinish={onFinish}
-          onValuesChange={onValuesChange}
           style={{ maxWidth: 400, margin: '0 auto' }}
-          initialValues={{ username: '', email: '', phoneNumber: '' }}
         >
           <Form.Item
             label="Username"
             name="username"
-            rules={[
-              { required: true, message: 'Please input your username!' },
-              { max: 100, message: 'Username is too long.' },
-            ]}
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
-            <Input autoComplete="username" disabled={loading} />
+            <Input disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -124,18 +73,15 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
               { type: 'email', message: 'Please input a valid email!' },
             ]}
           >
-            <Input autoComplete="email" disabled={loading} />
+            <Input disabled={loading} />
           </Form.Item>
 
           <Form.Item
             label="Phone Number"
             name="phoneNumber"
-            rules={[
-              { required: true, message: 'Please input your phone number!' },
-              { max: 20, message: 'Phone number is too long.' },
-            ]}
+            rules={[{ required: true, message: 'Please input your phone number!' }]}
           >
-            <Input autoComplete="tel" disabled={loading} />
+            <Input disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -149,13 +95,10 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
           <Form.Item
             label="Password"
             name="password"
-            rules={[
-              { required: true, message: 'Please input your password!' },
-              { min: 6, message: 'Password must be at least 6 characters.' },
-            ]}
+            rules={[{ required: true, message: 'Please input your password!' }]}
             hasFeedback
           >
-            <Input.Password autoComplete="new-password" disabled={loading} />
+            <Input.Password disabled={loading} />
           </Form.Item>
 
           <Form.Item
@@ -173,7 +116,7 @@ function RegisterModal({ visible, onClose, switchToLogin }) {
               }),
             ]}
           >
-            <Input.Password autoComplete="new-password" disabled={loading} />
+            <Input.Password disabled={loading} />
           </Form.Item>
 
           <Form.Item>
