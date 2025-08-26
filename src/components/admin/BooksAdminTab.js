@@ -14,7 +14,6 @@ function BooksAdminTab() {
   const [editingBook, setEditingBook] = useState(null);
   const [form] = Form.useForm();
 
-
   useEffect(() => {
     loadBooks();
   }, []);
@@ -32,7 +31,6 @@ function BooksAdminTab() {
     }
   };
 
-
   const openModal = (book = null) => {
     setEditingBook(book);
     setModalVisible(true);
@@ -43,17 +41,18 @@ function BooksAdminTab() {
     }
   };
 
-
   const closeModal = () => {
     setModalVisible(false);
     setEditingBook(null);
     form.resetFields();
   };
 
-
   const handleFormSubmit = async () => {
     try {
       const values = await form.validateFields();
+      if (!values.totalCopies) {
+        values.totalCopies = values.availableCopies || 0;
+      }
       if (editingBook) {
         await updateBook(editingBook.id, values);
         message.success('Book updated successfully!');
@@ -68,7 +67,6 @@ function BooksAdminTab() {
     }
   };
 
-
   const handleDelete = async (id) => {
     try {
       await deleteBook(id);
@@ -79,12 +77,13 @@ function BooksAdminTab() {
     }
   };
 
-
   const columns = [
     { title: 'Title', dataIndex: 'title', key: 'title' },
     { title: 'Author', dataIndex: 'authorName', key: 'authorName' },
+    { title: 'Publisher', dataIndex: 'publisher', key: 'publisher' },
     { title: 'Published Year', dataIndex: 'publishedYear', key: 'publishedYear' },
     { title: 'ISBN', dataIndex: 'isbn', key: 'isbn' },
+    { title: 'Total Copies', dataIndex: 'totalCopies', key: 'totalCopies' },
     { title: 'Available Copies', dataIndex: 'availableCopies', key: 'availableCopies' },
     {
       title: 'Actions',
@@ -142,11 +141,18 @@ function BooksAdminTab() {
             <Input />
           </Form.Item>
           <Form.Item
+            label="Publisher"
+            name="publisher"
+            rules={[{ required: true, message: 'Please enter the publisher.' }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
             label="Published Year"
             name="publishedYear"
             rules={[{ required: true, message: 'Please enter the published year.' }]}
           >
-            <Input />
+            <Input type="number" />
           </Form.Item>
           <Form.Item
             label="ISBN"
@@ -156,16 +162,22 @@ function BooksAdminTab() {
             <Input />
           </Form.Item>
           <Form.Item
+            label="Total Copies"
+            name="totalCopies"
+            rules={[{ required: true, message: 'Please enter the total copies.' }]}
+          >
+            <Input type="number" min={0} />
+          </Form.Item>
+          <Form.Item
             label="Available Copies"
             name="availableCopies"
-            rules={[{ required: true, message: 'Please enter the number of copies.' }]}
+            rules={[{ required: true, message: 'Please enter the number of available copies.' }]}
           >
             <Input type="number" min={0} />
           </Form.Item>
           <Form.Item
             label="Cover Image URL"
             name="coverImageUrl"
-            rules={[{ required: false }]}
           >
             <Input />
           </Form.Item>

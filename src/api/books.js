@@ -28,6 +28,7 @@ export async function addBook(bookData) {
 }
 
 export async function updateBook(bookId, bookData) {
+  console.log(bookData);
   const response = await axios.put(
     `${appsettings.apiBaseUrl}/books/${bookId}`,
     bookData,
