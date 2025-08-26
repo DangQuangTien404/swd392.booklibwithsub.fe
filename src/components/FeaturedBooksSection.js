@@ -1,15 +1,8 @@
 import React from 'react';
-import { Row, Col, Button } from 'antd';
-import '../styles/FeaturedBooksSection.css';
+import { Row, Col, Card } from 'antd';
+import { Link } from 'react-router-dom';
 
-function FeaturedBooksSection({
-  books,
-  onBorrow,
-  onAddToBasket,
-  onBorrowAll,
-  basketCount,
-  borrowedBookIds = new Set(),
-}) {
+function FeaturedBooksSection({ books }) {
   return (
     <section className="featured-books">
       <h2 className="section-title">Featured Books</h2>
@@ -17,32 +10,22 @@ function FeaturedBooksSection({
         {books && books.length > 0 ? (
           books.map((book) => (
             <Col key={book.id} xs={24} sm={12} md={8} lg={6}>
-              <div className="book-card">
-                {book.coverImageUrl ? (
-                  <img src={book.coverImageUrl} alt={book.title} className="img-center" />
-                ) : (
-                  <div className="img-not-found">Image not found</div>
-                )}
-                <h3>{book.title}</h3>
-                <p><strong>Author:</strong> {book.authorName}</p>
-                <p><strong>Published Year:</strong> {book.publishedYear}</p>
-                <Button
-                  className="borrow-btn"
-                  onClick={() => onBorrow(book)}
-                  disabled={borrowedBookIds.has(book.id)}
-                  style={borrowedBookIds.has(book.id) ? { backgroundColor: '#ccc', cursor: 'not-allowed' } : {}}
+              <Link to={`/books/${book.id}`} className="book-card-link">
+                <Card
+                  className="book-card"
+                  hoverable
+                  cover={
+                    book.coverImageUrl
+                      ? <img src={book.coverImageUrl} alt={book.title} className="img-center" />
+                      : <div className="img-not-found">Image not found</div>
+                  }
                 >
-                  {borrowedBookIds.has(book.id) ? 'Already Borrowed' : 'Borrow'}
-                </Button>
-                <Button
-                  className="basket-btn"
-                  onClick={() => onAddToBasket(book)}
-                  disabled={borrowedBookIds.has(book.id)}
-                  style={{ marginLeft: 8 }}
-                >
-                  Add to Basket
-                </Button>
-              </div>
+                  <h3>{book.title}</h3>
+                  <p><strong>Author:</strong> {book.authorName}</p>
+                  <p><strong>Published Year:</strong> {book.publishedYear}</p>
+                  <p><strong>Available:</strong> {book.availableCopies}</p>
+                </Card>
+              </Link>
             </Col>
           ))
         ) : (
@@ -51,15 +34,6 @@ function FeaturedBooksSection({
           </Col>
         )}
       </Row>
-      <div style={{ marginTop: 16 }}>
-        <Button
-          type="primary"
-          onClick={onBorrowAll}
-          disabled={basketCount === 0}
-        >
-          Borrow All in Basket ({basketCount})
-        </Button>
-      </div>
     </section>
   );
 }
