@@ -5,6 +5,7 @@ function getToken() {
   const user = JSON.parse(localStorage.getItem('user'));
   return user?.token;
 }
+
 function authHeaders() {
   const token = getToken();
   return token
@@ -12,50 +13,43 @@ function authHeaders() {
     : { 'Content-Type': 'application/json' };
 }
 
-const BASE = `${appsettings.apiBaseUrl}/books`;
+export async function fetchBooks() {
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books`);
+  return response.data;
+}
 
-function normalizeBookPayload(data = {}) {
-  return {
-    title: data.title?.trim() ?? '',
-    authorName: data.authorName?.trim() ?? '',
-    isbn: data.isbn?.trim() ?? '',
-    publisher: data.publisher?.trim() || null,
-    publishedYear: Number(data.publishedYear),           // BE expects number
-    totalCopies: Number(data.totalCopies),               // BE expects number
-    availableCopies: Number(data.availableCopies),       // BE expects number
-    coverImageUrl: data.coverImageUrl?.trim() || null
-  };
+export async function addBook(bookData) {
+  const response = await axios.post(
+    `${appsettings.apiBaseUrl}/books`,
+    bookData,
+    { headers: authHeaders() }
+  );
+  return response.data;
+}
+
+export async function updateBook(bookId, bookData) {
+  const response = await axios.put(
+    `${appsettings.apiBaseUrl}/books/${bookId}`,
+    bookData,
+    { headers: authHeaders() }
+  );
+  return response.data;
+}
+
+export async function getBookById(bookId) {
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books/${bookId}`);
+  return response.data;
 }
 
 export async function getBooksSorted(order = 'desc') {
-  const res = await axios.get(`${BASE}/sorted?order=${order}`);
-  return res.data; // [{ id, title, authorName, ... }]
+  const response = await axios.get(`${appsettings.apiBaseUrl}/books/sorted?order=${order}`);
+  return response.data;
 }
 
-export async function getBookById(id) {
-  const res = await axios.get(`${BASE}/${id}`);
-  return res.data;
-}
-
-export async function addBook(data) {
-  const payload = normalizeBookPayload(data);
-  const res = await axios.post(BASE, payload, { headers: authHeaders() });
-  return res.data; // created, shaped by BE
-}
-
-export async function updateBook(id, data) {
-  const payload = normalizeBookPayload(data);
-  try {
-    const res = await axios.put(`${BASE}/${id}`, payload, { headers: authHeaders() });
-    return res.data;
-  } catch (err) {
-    // Surface BE message (e.g., ISBN conflict) for the UI
-    console.error('Update book failed:', err.response?.status, err.response?.data);
-    throw err;
-  }
-}
-
-export async function deleteBook(id) {
-  const res = await axios.delete(`${BASE}/${id}`, { headers: authHeaders() });
-  return res.data;
+export async function deleteBook(bookId) {
+  const response = await axios.delete(
+    `${appsettings.apiBaseUrl}/books/${bookId}`,
+    { headers: authHeaders() }
+  );
+  return response.data;
 }
