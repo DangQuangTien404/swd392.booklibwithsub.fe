@@ -1,0 +1,37 @@
+.book-detail-content {
+  min-height: 85vh;
+  padding: 2rem 0;
+  background: #f7f7fa;
+}
+
+.book-detail-card {
+  margin: 2rem auto 0 auto;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px 0 rgba(0,0,0,0.06);
+  max-width: 500px;
+}
+
+.book-detail-image {
+  width: 100%;
+  max-height: 320px;
+  object-fit: contain;
+  border-radius: 6px 6px 0 0;
+  background: #fafbfc;
+}
+
+.book-detail-info {
+  padding-top: 1rem;
+}
+
+.book-detail-info h2 {
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #29304d;
+}
+
+.book-detail-info p {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  color: #42526e;
+}
