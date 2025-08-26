@@ -5,6 +5,7 @@ import Card from '../components/Card';
 import { fetchSubscriptionStatus } from '../api/subscriptions';
 import { updateCurrentUserProfile, getCurrentUserProfile } from '../api/users';
 import { getLoanHistory, getActiveLoans, returnLoanedBook } from '../api/loans';
+import { getBookById } from '../api/books';
 import '../styles/UserDashboard.css';
 
 const { Content } = Layout;
@@ -18,6 +19,7 @@ function UserDashboard() {
   const [editingProfile, setEditingProfile] = useState(false);
   const [activeLoansLoading, setActiveLoansLoading] = useState(false);
   const [returnModal, setReturnModal] = useState({ visible: false, loanItemId: null });
+  const [bookNames, setBookNames] = useState({}); // Map of bookID -> bookTitle
   const [profileForm] = Form.useForm();
 
   useEffect(() => {
@@ -41,6 +43,30 @@ function UserDashboard() {
       setActiveLoansLoading(true);
       try {
         const activeLoans = await getActiveLoans();
+
+        // Gather all unique bookIDs from activeLoans
+        const bookIDs = [];
+        activeLoans.forEach(loan =>
+          loan.items.forEach(item => {
+            if (!bookIDs.includes(item.bookID)) {
+              bookIDs.push(item.bookID);
+            }
+          })
+        );
+        // Fetch all book names
+        const bookNameMap = {};
+        await Promise.all(
+          bookIDs.map(async bookID => {
+            try {
+              const book = await getBookById(bookID);
+              bookNameMap[bookID] = book.title;
+            } catch {
+              bookNameMap[bookID] = 'Unknown Book';
+            }
+          })
+        );
+        setBookNames(bookNameMap);
+
         setActiveLoans(activeLoans);
       } catch (error) {
         setActiveLoans([]);
@@ -77,12 +103,35 @@ function UserDashboard() {
     try {
       await returnLoanedBook(returnModal.loanItemId);
       message.success('Book returned successfully!');
-      // Refresh loan data
+      // Refresh loan data and book names
       const [history, activeLoans] = await Promise.all([
         getLoanHistory(),
         getActiveLoans(),
       ]);
       setLoanHistory(history);
+
+      // Re-fetch book names for active loans
+      const bookIDs = [];
+      activeLoans.forEach(loan =>
+        loan.items.forEach(item => {
+          if (!bookIDs.includes(item.bookID)) {
+            bookIDs.push(item.bookID);
+          }
+        })
+      );
+      const bookNameMap = {};
+      await Promise.all(
+        bookIDs.map(async bookID => {
+          try {
+            const book = await getBookById(bookID);
+            bookNameMap[bookID] = book.title;
+          } catch {
+            bookNameMap[bookID] = 'Unknown Book';
+          }
+        })
+      );
+      setBookNames(bookNameMap);
+
       setActiveLoans(activeLoans);
     } catch (error) {
       message.error('Failed to return book. Please try again.');
@@ -153,7 +202,9 @@ function UserDashboard() {
                   {activeLoans.map((loan) =>
                     loan.items.map((item) => (
                       <li key={item.loanItemID} style={{ marginBottom: 10 }}>
-                        <strong>Book ID: {item.bookID}</strong>
+                        <strong>
+                          {bookNames[item.bookID] || `Book ID: ${item.bookID}`}
+                        </strong>
                         <span style={{ marginLeft: 12, color: '#888' }}>
                           {item.dueDate
                             ? `Due: ${new Date(item.dueDate).toLocaleDateString()}`
