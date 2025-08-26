@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Modal, Form, Input, Button, Typography } from 'antd';
 import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 import '../styles/LoginModal.css';
 import appsettings from '../appsettings';
 import { login } from '../api/auth';
@@ -11,6 +12,7 @@ const { Text } = Typography;
 function LoginModal({ visible, onClose, switchToRegister }) {
   const { setUser } = useContext(UserContext);
   const [modal, setModal] = useState({ visible: false, type: '', title: '', content: '' });
+  const navigate = useNavigate();
 
   const handleModalClose = () => setModal({ visible: false, type: '', title: '', content: '' });
 
@@ -22,7 +24,11 @@ function LoginModal({ visible, onClose, switchToRegister }) {
       const userRole = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
       setUser({ token: data.token, userName, userRole });
       setModal({ visible: true, type: 'success', title: 'Login Successful', content: `Welcome, ${userName}!` });
+      
       onClose();
+      if (userRole === 'admin') {
+        navigate('/admin');
+      }
     } catch (error) {
       setModal({ visible: true, type: 'error', title: 'Login Failed', content: error.message || 'Login failed.' });
     }
@@ -64,7 +70,7 @@ function LoginModal({ visible, onClose, switchToRegister }) {
           </Form.Item>
         </Form>
         <div style={{ textAlign: 'center', marginTop: '1rem' }}>
-          <Text>Don't have an account yet? </Text>
+          <Typography.Text>Don't have an account yet? </Typography.Text>
           <Button type="link" onClick={switchToRegister} style={{ padding: 0 }}>
             Register here
           </Button>
