@@ -29,6 +29,9 @@ function AdminDashboard() {
           <Tabs.TabPane tab="Subscription Plans" key="3">
             <PlansAdminTab />
           </Tabs.TabPane>
+          <Tabs.TabPane tab="Users" key="2">
+            <UsersAdminTab />
+          </Tabs.TabPane>
         </Tabs>
       </Content>
     </Layout>
