@@ -132,3 +132,34 @@
   position: relative;
   display: inline-block;
 }
+
+.all-books-link {
+  background: transparent;
+  color: #fff !important;
+  border-radius: 5px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  padding: 0.2rem 1rem;
+  border: none;
+  box-shadow: none;
+  transition: background 0.14s, color 0.14s, border-bottom 0.2s;
+  position: relative;
+}
+
+.all-books-link:hover,
+.all-books-link:focus {
+  background: rgba(255,255,255,0.10);
+  color: #e9ffe9 !important;
+  text-decoration: none;
+}
+
+.all-books-link .anticon {
+  color: #fff;
+  transition: color 0.14s;
+}
+
+.all-books-link:hover .anticon,
+.all-books-link:focus .anticon {
+  color: #e9ffe9;
+}

@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Layout, Button, Menu, Dropdown, Modal, message } from 'antd';
+import { BookOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../context/UserContext';
 import LoginModal from './LoginModal';
@@ -66,7 +67,10 @@ function Header() {
     <Link to="/" className="header-link logo-link">BookLib</Link>
       </div>
       <nav className="header-nav">
-        <Link to="/all-books" className="header-link nav-link">All Books</Link>
+        <Link to="/all-books" className="header-link nav-link all-books-link">
+          <BookOutlined style={{ marginRight: 6, fontSize: 16, verticalAlign: '-3px' }} />
+          All Books
+        </Link>
       </nav>
       <div className="header-actions">
         {userName ? (
