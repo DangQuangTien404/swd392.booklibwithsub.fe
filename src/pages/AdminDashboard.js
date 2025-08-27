@@ -4,6 +4,7 @@ import { Tabs, Layout, Button } from 'antd';
 import BooksAdminTab from '../components/admin/BooksAdminTab';
 import UsersAdminTab from '../components/admin/UsersAdminTab';
 import PlansAdminTab from '../components/admin/PlansAdminTab';
+import LoansAdminTab from '../components/admin/LoansAdminTab';
 import { UserContext } from '../context/UserContext';
 import { logout } from '../api/auth';
 
@@ -46,6 +47,9 @@ function AdminDashboard() {
           </Tabs.TabPane>
           <Tabs.TabPane tab="Users" key="2">
             <UsersAdminTab />
+          </Tabs.TabPane>
+          <Tabs.TabPane tab="Loans" key="4">
+            <LoansAdminTab />
           </Tabs.TabPane>
         </Tabs>
       </Content>

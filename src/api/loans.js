@@ -72,3 +72,10 @@ export async function extendLoan(loanId, { newDueDate, daysToExtend }) {
   );
   return response.data;
 }
+
+export async function fetchAllLoans(status) {
+  let url = `${appsettings.apiBaseUrl}/loans/all`;
+  if (status) url += `?status=${encodeURIComponent(status)}`;
+  const response = await axios.get(url, { headers: authHeaders() });
+  return response.data;
+}
