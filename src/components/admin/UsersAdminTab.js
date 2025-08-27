@@ -105,23 +105,25 @@ function UsersAdminTab() {
     { title: 'Full Name', dataIndex: 'fullName', key: 'fullName' },
     { title: 'Email', dataIndex: 'email', key: 'email' },
     { title: 'Role', dataIndex: 'role', key: 'role' },
-    {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record) => (
-        <Space>
-          <Button onClick={() => openModal(record)} type="link">Edit</Button>
-          <Popconfirm
-            title="Are you sure you want to delete this user?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Yes"
-            cancelText="No"
-          >
-            <Button type="link" danger>Delete</Button>
-          </Popconfirm>
-        </Space>
-      ),
-    },
+    // {
+    //   title: 'Actions',
+    //   key: 'actions',
+    //   render: (_, record) => (
+    //     <Space>
+    //       <Button onClick={() => openModal(record)} type="link">Edit</Button>
+    //       <Popconfirm
+    //         title="Are you sure you want to delete this user?"
+    //         onConfirm={() => handleDelete(record.id)}
+    //         okText="Yes"
+    //         cancelText="No"
+    //       >
+    //         <Button type="link" danger>Delete</Button>
+    //       </Popconfirm>
+    //     </Space>
+    //   ),
+    // },
+    //No usage for edit and delete (yet?)
+    
   ];
 
   return (
