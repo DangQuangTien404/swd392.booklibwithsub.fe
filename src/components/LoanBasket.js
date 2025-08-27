@@ -79,7 +79,7 @@ function LoanBasket() {
             className="loan-basket-add-btn"
             onClick={handleAddBooks}
           >
-            Add to Loan
+            Borrow All
           </Button>
         </>
       )}
