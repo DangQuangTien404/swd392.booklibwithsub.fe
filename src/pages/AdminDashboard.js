@@ -1,15 +1,16 @@
 import React, { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Tabs, Layout } from 'antd';
+import { Tabs, Layout, Button } from 'antd';
 import BooksAdminTab from '../components/admin/BooksAdminTab';
 import UsersAdminTab from '../components/admin/UsersAdminTab';
 import PlansAdminTab from '../components/admin/PlansAdminTab';
 import { UserContext } from '../context/UserContext';
+import { logout } from '../api/auth';
 
 const { Content } = Layout;
 
 function AdminDashboard() {
-  const { user } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -18,10 +19,24 @@ function AdminDashboard() {
     }
   }, [user, navigate]);
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (e) {}
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/');
+  };
+
   return (
     <Layout>
       <Content style={{ padding: '2rem' }}>
-        <h1>Admin Dashboard</h1>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1>Admin Dashboard</h1>
+          <Button onClick={handleLogout} danger type="primary">
+            Log out
+          </Button>
+        </div>
         <Tabs defaultActiveKey="1">
           <Tabs.TabPane tab="Books" key="1">
             <BooksAdminTab />

@@ -1,5 +1,6 @@
 import React, { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import ProtectedRoute from './components/admin/ProtectedRoute';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const UserDashboard = lazy(() => import('./pages/UserDashboard'));
@@ -11,11 +12,46 @@ function App() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/dashboard" element={<UserDashboard />} />
-        <Route path="/all-books" element={<AllBooksPage />} />
-        <Route path="/books/:id" element={<BookDetailPage />} />
-        <Route path="/admin" element={<AdminDashboard />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute allowAdmin={false}>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowAdmin={false}>
+              <UserDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/all-books"
+          element={
+            <ProtectedRoute allowAdmin={false}>
+              <AllBooksPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/books/:id"
+          element={
+            <ProtectedRoute allowAdmin={false}>
+              <BookDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute adminOnly={true}>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Suspense>
   );
