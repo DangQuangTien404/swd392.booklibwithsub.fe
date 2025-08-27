@@ -5,8 +5,8 @@ import { addBooksToLoan, borrowBook } from '../api/loans';
 import { UserContext } from '../context/UserContext';
 import '../styles/LoanBasket.css';
 
-function LoanBasket({ loanId }) {
-  const { basket, setBasket } = useContext(UserContext);
+function LoanBasket() {
+  const { user, subscriptionStatus, basket, setBasket } = useContext(UserContext);
 
   const handleRemoveBook = (bookId) => {
     setBasket(basket.filter((book) => book.id !== bookId));
@@ -15,8 +15,24 @@ function LoanBasket({ loanId }) {
   const handleAddBooks = async () => {
     try {
       const bookIds = basket.map((book) => book.id);
-      await borrowBook(loanId, bookIds);
+      if (!bookIds.length) return;
+
+      if (user?.loanId) {
+        await addBooksToLoan(user.loanId, bookIds);
+      } else if (subscriptionStatus?.subscriptionId) {
+        await borrowBook(subscriptionStatus.subscriptionId, bookIds);
+      } else {
+        Modal.error({
+          title: 'Error',
+          content: 'No active subscription found. Please subscribe first.',
+        });
+        return;
+      }
       setBasket([]);
+      Modal.success({
+        title: 'Success',
+        content: 'All books in the basket have been borrowed successfully.',
+      });
     } catch (error) {
       Modal.error({
         title: 'Error',

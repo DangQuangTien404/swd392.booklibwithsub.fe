@@ -252,7 +252,7 @@ function UserDashboard() {
                       </tr>
                       <tr>
                         <td><b>Phone Number</b></td>
-                        <td>{profile?.phone}</td>
+                        <td>{profile?.phoneNumber}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -279,7 +279,7 @@ function UserDashboard() {
                   <Form.Item label="Email" name="email">
                     <Input disabled />
                   </Form.Item>
-                  <Form.Item label="Phone Number" name="phone">
+                  <Form.Item label="Phone Number" name="phoneNumber">
                     <Input />
                   </Form.Item>
                 </Form>
